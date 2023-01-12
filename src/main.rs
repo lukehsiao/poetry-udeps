@@ -1,13 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
-use clap_verbosity_flag::Verbosity;
-
-#[derive(Parser)]
-#[command(author, version, about, long_about = None)]
-struct Cli {
-    #[clap(flatten)]
-    verbose: Verbosity,
-}
+use poetry_udeps::{run, Cli};
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
@@ -15,6 +8,8 @@ fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_max_level(convert_filter(cli.verbose.log_level_filter()))
         .init();
+
+    run(cli)?;
 
     Ok(())
 }
