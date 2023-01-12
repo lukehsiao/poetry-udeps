@@ -39,11 +39,7 @@ pub fn run(_cli: Cli) -> Result<()> {
     });
 
     // Iterate over Python files in parallel in the venv
-    let types = TypesBuilder::new()
-        .add_defaults()
-        .select("py")
-        .select("jupyter")
-        .build()?;
+    let types = TypesBuilder::new().add_defaults().select("py").build()?;
     let walker = WalkBuilder::new(venv_path)
         .standard_filters(false)
         .types(types)
@@ -64,11 +60,7 @@ pub fn run(_cli: Cli) -> Result<()> {
     });
 
     // Iterate over Python files in parallel in the current directory
-    let types = TypesBuilder::new()
-        .add_defaults()
-        .select("py")
-        .select("jupyter")
-        .build()?;
+    let types = TypesBuilder::new().add_defaults().select("py").build()?;
     let walker = WalkBuilder::new("./")
         .standard_filters(true)
         .types(types)
