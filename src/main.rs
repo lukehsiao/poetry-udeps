@@ -1,17 +1,21 @@
-use anyhow::Result;
 use clap::Parser;
 use poetry_udeps::{run, Cli};
+use std::process;
 
-fn main() -> Result<()> {
+fn main() {
     let cli = Cli::parse();
 
     tracing_subscriber::fmt()
         .with_max_level(convert_filter(cli.verbose.log_level_filter()))
         .init();
 
-    run(cli)?;
-
-    Ok(())
+    match run(cli) {
+        Ok(_) => process::exit(0),
+        Err(e) => {
+            eprintln!("{}", e);
+            process::exit(2)
+        }
+    }
 }
 
 fn convert_filter(filter: log::LevelFilter) -> tracing_subscriber::filter::LevelFilter {

@@ -16,10 +16,12 @@ use phf::phf_ordered_map;
 pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "PyYAML" => "yaml",
     "SQLAlchemy" => "sqlalchemy",
-    "Wand" => "wand",
     "argon2-cffi" => "argon2",
     "beautifulsoup4" => "bs4",
+    "hydra-colorlog" => "colorlog",
+    "hydra_colorlog" => "colorlog",
     "jupyter" => "IPython",
+    "snowflake-connector-python" => "snowflake",
 };
 
 #[cfg(test)]
