@@ -1,5 +1,5 @@
 use std::{
-    collections::HashSet,
+    collections::BTreeMap,
     fs,
     io::{self, Write},
     path::Path,
@@ -14,6 +14,9 @@ use log::info;
 use toml::Value;
 use xshell::{cmd, Shell};
 
+mod name_map;
+use crate::name_map::KNOWN_NAMES;
+
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
@@ -27,42 +30,59 @@ fn get_venv_path() -> Result<String> {
     Ok(cmd!(sh, "poetry env info -p").quiet().read()?)
 }
 
-fn get_dependencies(file: &Path) -> Result<(HashSet<String>, HashSet<String>)> {
+enum DepType {
+    Main,
+    Dev,
+}
+
+/// Returns two maps (one for core deps, one for dev-deps).
+///
+/// The maps are filled with either the original package name -> None, or with the alias ->
+/// Some(package name). This helps us quickly determine which original dependency to eliminate if either
+/// the original package name or alias is found.
+///
+/// We do not simply track the aliases alone, as reporting an alias as obsolete is not as
+/// straightforward to the user which line to eliminate from their pyproject.toml.
+fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Option<String>>> {
+    // let sh = Shell::new()?;
     let toml = fs::read_to_string(file)?;
 
+    // TODO: map package name to actual module name.
+    // Ref: https://stackoverflow.com/a/54853084
     let value = toml.parse::<Value>()?;
-    let dependencies: HashSet<String> = value
+    let dep_key = match deps {
+        DepType::Main => "dependencies",
+        DepType::Dev => "dev_dependencies",
+    };
+    let dependencies: BTreeMap<String, Option<String>> = value
         .get("tool")
         .unwrap()
         .get("poetry")
         .unwrap()
-        .get("dependencies")
+        .get(dep_key)
         .unwrap()
         .as_table()
         .unwrap()
         .keys()
-        .map(|s| String::from(s))
+        .map(|s| {
+            let package = String::from(s);
+            let alias = KNOWN_NAMES.get(&package).map(|a| String::from(*a));
+            (package, alias)
+        })
         .collect();
-    info!("Dependencies: {:#?}", dependencies);
-    let dev_dependencies: HashSet<String> = value
-        .get("tool")
-        .unwrap()
-        .get("poetry")
-        .unwrap()
-        .get("dev-dependencies")
-        .unwrap()
-        .as_table()
-        .unwrap()
-        .keys()
-        .map(|s| String::from(s))
-        .collect();
-    info!("Dev Dependencies: {:#?}", dev_dependencies);
-    Ok((dependencies, dev_dependencies))
+    Ok(dependencies)
+}
+
+fn get_deps_from_file(_file: &Path) -> Result<Vec<String>> {
+    Ok(vec![])
 }
 
 pub fn run(_cli: Cli) -> Result<()> {
     let pyproject_path = Path::new("pyproject.toml");
-    let (deps, dev_deps) = get_dependencies(&pyproject_path)?;
+    let main_deps = get_dependencies(pyproject_path, DepType::Main)?;
+    info!("Main Deps: {:#?}", main_deps);
+    let dev_deps = get_dependencies(pyproject_path, DepType::Dev)?;
+    info!("Dev Deps: {:#?}", dev_deps);
 
     let venv_path = get_venv_path()?;
     info!("Reading files in venv: {}", venv_path);
@@ -73,8 +93,8 @@ pub fn run(_cli: Cli) -> Result<()> {
     let stdout_thread = thread::spawn(move || {
         let mut stdout = io::BufWriter::new(io::stdout());
         for entity in rx {
-            // stdout.write(entity.as_bytes()).unwrap();
-            // stdout.write(b"\n").unwrap();
+            stdout.write_all(entity.as_bytes()).unwrap();
+            stdout.write_all(b"\n").unwrap();
         }
     });
 
