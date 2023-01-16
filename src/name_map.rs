@@ -1,4 +1,4 @@
-use phf::phf_map;
+use phf::phf_ordered_map;
 
 /// This list represents the mapping between package name you install and the module name you
 /// import.
@@ -13,8 +13,13 @@ use phf::phf_map;
 ///
 /// [1]: https://stackoverflow.com/a/54853084
 #[rustfmt::skip]
-pub static KNOWN_NAMES: phf::Map<&str, &str> = phf_map! {
+pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
+    "PyYAML" => "yaml",
+    "SQLAlchemy" => "sqlalchemy",
+    "Wand" => "wand",
     "argon2-cffi" => "argon2",
+    "beautifulsoup4" => "bs4",
+    "jupyter" => "IPython",
 };
 
 #[cfg(test)]
@@ -23,7 +28,7 @@ mod tests {
 
     #[test]
     fn known_names_are_sorted() {
-        let mut names = KNOWN_NAMES.entries().map(|(name, alias)| name);
+        let mut names = KNOWN_NAMES.entries().map(|(name, _alias)| name);
 
         let Some(mut previous_name) = names.next() else { return; };
 
