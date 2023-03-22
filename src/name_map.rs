@@ -14,14 +14,21 @@ use phf::phf_ordered_map;
 /// [1]: https://stackoverflow.com/a/54853084
 #[rustfmt::skip]
 pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
-    "PyYAML" => "yaml",
-    "SQLAlchemy" => "sqlalchemy",
     "argon2-cffi" => "argon2",
     "beautifulsoup4" => "bs4",
     "hydra-colorlog" => "colorlog",
     "hydra_colorlog" => "colorlog",
+    "hydra-core" => "hydra",
     "jupyter" => "IPython",
+    "python-jose" => "jose",
+    "python-slugify" => "slugify",
+    "pytorch-nlp" => "torchnlp",
+    "pyvespa" => "vespa",
+    "PyYAML" => "yaml",
+    "scikit-learn" => "sklearn",
     "snowflake-connector-python" => "snowflake",
+    "SQLAlchemy" => "sqlalchemy",
+    "Wand" => "wand",
 };
 
 #[cfg(test)]
