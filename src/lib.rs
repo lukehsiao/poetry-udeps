@@ -8,10 +8,10 @@ use std::{
 
 use anyhow::Result;
 use clap::Parser;
-use clap_verbosity_flag::Verbosity;
+use clap_verbosity_flag::{Verbosity, WarnLevel};
 use ignore::{types::TypesBuilder, WalkBuilder};
-use log::info;
 use toml::Value;
+use tracing::info;
 use xshell::{cmd, Shell};
 
 mod name_map;
@@ -23,7 +23,7 @@ use crate::parser::{parse_python_file, ImportStatement};
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
     #[clap(flatten)]
-    pub verbose: Verbosity,
+    pub verbose: Verbosity<WarnLevel>,
     #[arg(short = 'e', long)]
     /// Whether to look for dependency usage in the poetry virtualenv.
     ///
@@ -113,9 +113,9 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
 pub fn run(cli: Cli) -> Result<()> {
     let pyproject_path = Path::new("pyproject.toml");
     let mut main_deps = get_dependencies(pyproject_path, DepType::Main)?;
-    info!("Main Deps: {:#?}", main_deps);
+    info!(main_deps = format!("{main_deps:?}"));
     let mut dev_deps = get_dependencies(pyproject_path, DepType::Dev)?;
-    info!("Dev Deps: {:#?}", dev_deps);
+    info!(dev_deps = format!("{dev_deps:?}"));
 
     let (tx, rx) = flume::bounded::<(ImportStatement, PathBuf)>(100);
 
@@ -133,20 +133,29 @@ pub fn run(cli: Cli) -> Result<()> {
                     import.module
                 ));
             }
+            // DBT Adapters
+            if import.package.starts_with("dbt.adapters") {
+                aliases.push({
+                    let parts: Vec<&str> = import.package.split('.').collect();
+                    [parts[0], parts[2]].join("-")
+                });
+            }
+            // SQLAlchemy Extentions
+            if import.package.contains('.') {
+                aliases.push(import.package.split('.').collect::<Vec<&str>>().join("-"));
+            }
             if let Some(p) = import.package.split_once('.') {
                 aliases.push(p.0.to_string());
             }
-            if !import.package.contains('.') {
-                aliases.push(import.package);
-            }
+            aliases.push(import.package);
             for alias in aliases {
                 if main_deps.contains_key(&alias) {
                     if let Some(v) = main_deps.remove(&alias) {
                         if v.is_empty() {
-                            info!("Found {} in {}", alias, path.display())
+                            info!(found = alias, path = path.to_str());
                         } else {
                             for orig in v {
-                                info!("Found {} in {}", orig, path.display());
+                                info!(found = orig, path = path.to_str());
                                 main_deps.remove(&orig);
                             }
                         }
