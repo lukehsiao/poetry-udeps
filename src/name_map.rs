@@ -20,6 +20,7 @@ pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "Wand" => "wand",
     "argon2-cffi" => "argon2",
     "beautifulsoup4" => "bs4",
+    "boto3-stubs" => "mypy_boto3_iam",
     "faiss-cpu" => "faiss",
     "faiss-gpu" => "faiss",
     "grpcio" => "grpc",
