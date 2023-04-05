@@ -2,46 +2,52 @@ use anyhow::Result;
 use nom::{
     branch::alt,
     bytes::complete::{is_not, tag, take_until},
-    character::complete::{alpha1, alphanumeric1, anychar, char, multispace0, multispace1, space1},
+    character::complete::{alpha1, alphanumeric1, anychar, char, space1},
     combinator::{all_consuming, map, recognize, value},
     multi::{many0, many0_count},
     sequence::{pair, tuple},
     IResult,
 };
 
+#[derive(Debug, PartialEq)]
+pub struct ImportStatement {
+    pub package: String,
+    pub module: String,
+}
+
 /// Parsing identifiers that may start with a letter (or underscore) and may contain underscores,
-/// letters, and numbers.
+/// letters, numbers, and periods.
 fn identifier(input: &str) -> IResult<&str, &str> {
     recognize(pair(
         alt((alpha1, tag("_"))),
-        many0_count(alt((alphanumeric1, tag("_")))),
+        many0_count(alt((alphanumeric1, tag("_"), tag(".")))),
     ))(input)
 }
 
-/// Consume an entire import line, extracting the package
-fn parse_import(input: &str) -> IResult<&str, &str> {
-    let (input, _) = multispace0(input)?;
-    let (input, _) = tag("import ")(input)?;
-    let (input, package) = identifier(input)?;
-    let (input, _) = take_until("\n")(input)?;
-    let (input, _) = multispace1(input)?;
-
-    Ok((input, package))
+fn from_package_import(input: &str) -> IResult<&str, ImportStatement> {
+    let (input, (_, _, package, _, _, _, module)) = tuple((
+        tag("from"),
+        space1,
+        identifier,
+        space1,
+        tag("import"),
+        space1,
+        identifier,
+    ))(input)?;
+    let statement = ImportStatement {
+        module: module.to_owned(),
+        package: package.to_owned(),
+    };
+    Ok((input, statement))
 }
 
-/// Consume the important bits of a from block, extracting the package
-///
-/// Specifically, we also consume the "import", so we don't get confused.
-fn parse_from(input: &str) -> IResult<&str, &str> {
-    let (input, _) = multispace0(input)?;
-    let (input, _) = tag("from ")(input)?;
-    let (input, package) = identifier(input)?;
-    let (input, _) = many0(pair(tag("."), identifier))(input)?;
-    let (input, _) = space1(input)?;
-    let (input, _) = tag("import")(input)?;
-    let (input, _) = multispace1(input)?;
-
-    Ok((input, package))
+fn simple_import(input: &str) -> IResult<&str, ImportStatement> {
+    let (input, (_, _, package)) = tuple((tag("import"), space1, identifier))(input)?;
+    let statement = ImportStatement {
+        module: "".to_owned(),
+        package: package.to_owned(),
+    };
+    Ok((input, statement))
 }
 
 fn inline_comment(input: &str) -> IResult<&str, ()> {
@@ -54,23 +60,24 @@ fn multiline_comment(input: &str) -> IResult<&str, ()> {
         tuple((tag("\"\"\""), take_until("\"\"\""), tag("\"\"\""))),
     )(input)
 }
-fn parse_block(input: &str) -> IResult<&str, Option<&str>> {
+
+fn parse_block(input: &str) -> IResult<&str, Option<ImportStatement>> {
     alt((
-        map(parse_from, Some),
+        map(from_package_import, Some),
+        map(simple_import, Some),
         map(inline_comment, |_| None),
-        map(parse_import, Some),
         map(multiline_comment, |_| None),
         // Consume everything else
         map(anychar, |_| None),
     ))(input)
 }
 
-fn parse_file(input: &str) -> IResult<&str, Vec<&str>> {
+fn parse_file(input: &str) -> IResult<&str, Vec<ImportStatement>> {
     let (i, v) = all_consuming(many0(parse_block))(input)?;
     Ok((i, v.into_iter().flatten().collect()))
 }
 
-pub fn parse_python_file(input: &str) -> Result<Vec<&str>> {
+pub fn parse_python_file(input: &str) -> Result<Vec<ImportStatement>> {
     let (_, v) = parse_file(input).map_err(|e| e.to_owned())?;
     Ok(v)
 }
@@ -78,6 +85,8 @@ pub fn parse_python_file(input: &str) -> Result<Vec<&str>> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use pretty_assertions::assert_eq;
+
     #[test]
     fn test_identifier() {
         assert_eq!(
@@ -86,28 +95,43 @@ mod test {
         );
         assert_eq!(identifier("argon2"), Ok(("", "argon2")));
         assert_eq!(identifier("pprint"), Ok(("", "pprint")));
-        assert_eq!(identifier("google.cloud"), Ok((".cloud", "google")));
+        assert_eq!(identifier("google.cloud"), Ok(("", "google.cloud")));
     }
     #[test]
     fn test_simple_import() {
-        assert_eq!(parse_import("import numpy as np\n").unwrap().1, "numpy");
-        assert_eq!(parse_import("import google.cloud\n").unwrap().1, "google");
+        assert_eq!(simple_import("import numpy").unwrap().1.package, "numpy");
+        assert_eq!(
+            simple_import("import google.cloud").unwrap().1.package,
+            "google.cloud"
+        );
+        assert_eq!(
+            simple_import("import snowflake.connector")
+                .unwrap()
+                .1
+                .package,
+            "snowflake.connector"
+        );
     }
     #[test]
     fn test_simple_from() {
-        assert_eq!(
-            parse_from("from google.cloud import bigquery").unwrap().1,
-            "google"
-        );
-        assert_eq!(parse_from("from pprint import pprint").unwrap().1, "pprint");
-        assert_eq!(
-            parse_from(
-                "from torchnlp.encoders.text.default_reserved_tokens import DEFAULT_COPY_TOKEN"
-            )
+        let import = from_package_import("from google.cloud import bigquery")
             .unwrap()
-            .1,
-            "torchnlp"
+            .1;
+        assert_eq!(import.package, "google.cloud");
+        assert_eq!(import.module, "bigquery");
+        let import = from_package_import("from pprint import pprint").unwrap().1;
+        assert_eq!(import.package, "pprint");
+        assert_eq!(import.module, "pprint");
+        let import = from_package_import(
+            "from torchnlp.encoders.text.default_reserved_tokens import DEFAULT_COPY_TOKEN",
+        )
+        .unwrap()
+        .1;
+        assert_eq!(
+            import.package,
+            "torchnlp.encoders.text.default_reserved_tokens"
         );
+        assert_eq!(import.module, "DEFAULT_COPY_TOKEN");
     }
     #[test]
     fn test_multiline_comment() {
@@ -119,15 +143,15 @@ mod test {
             multiline_comment(
                 r#""""Some function docstring.
 
-    Some docstrings are really long.
+        Some docstrings are really long.
 
-    Args:
-        something: a list of stuff
+        Args:
+            something: a list of stuff
 
-    Example:
-        import pprint
-        pprint("hello world")
-    """"#
+        Example:
+            import pprint
+            pprint("hello world")
+        """"#
             ),
             Ok(("", ()))
         );
@@ -141,20 +165,29 @@ mod test {
     #[test]
     fn test_parse_file() {
         let file = r#"
-from pprint import pprint
-import numpy as np
-from torchnlp.encoders.text.default_reserved_tokens import DEFAULT_COPY_TOKEN
+    from pprint import pprint
+    import numpy as np
+    from torchnlp.encoders.text.default_reserved_tokens import DEFAULT_COPY_TOKEN
 
-def run() -> None:
-    pprint(np.ones(10))
+    def run() -> None:
+        pprint(np.ones(10))
 
-if __name__ == "__main__":
-    run()
+    if __name__ == "__main__":
+        run()
 
-        "#;
+            "#;
+        let imports = parse_file(file).unwrap().1;
         assert_eq!(
-            parse_file(file).unwrap().1,
-            vec!["pprint", "numpy", "torchnlp"]
+            imports.iter().map(|i| &i.package).collect::<Vec<_>>(),
+            [
+                "pprint",
+                "numpy",
+                "torchnlp.encoders.text.default_reserved_tokens"
+            ]
+        );
+        assert_eq!(
+            imports.iter().map(|i| &i.module).collect::<Vec<_>>(),
+            ["pprint", "", "DEFAULT_COPY_TOKEN"]
         );
     }
 }
