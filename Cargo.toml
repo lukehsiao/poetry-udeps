@@ -14,8 +14,8 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 anyhow = "1.0.70"
-clap = { version = "4.1.11", features = ["wrap_help", "derive", "suggestions"] }
-clap-verbosity-flag = "2.0.0"
+clap = { version = "4.2.1", features = ["wrap_help", "derive", "suggestions"] }
+clap-verbosity-flag = "2.0.1"
 crossbeam-channel = "0.5.7"
 ignore = "0.4.20"
 log = "0.4.17"
