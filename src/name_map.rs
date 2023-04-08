@@ -37,6 +37,7 @@ pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "pyvespa" => "vespa",
     "scikit-learn" => "sklearn",
     "snowflake-connector-python" => "snowflake",
+    "unicodedata2" => "unicodedata",
 };
 
 #[cfg(test)]
