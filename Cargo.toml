@@ -6,7 +6,7 @@ authors = ["Luke Hsiao <luke@hsiao.dev>"]
 description = "find unused dependencies in pyproject.toml"
 repository = "https://github.com/lukehsiao/poetry-udeps"
 homepage = "https://github.com/lukehsiao/poetry-udeps"
-license = "MIT OR Apache-2.0"
+license = "BlueOak-1.0.0"
 keywords = ["poetry", "dependencies"]
 categories = ["command-line-utilities"]
 
