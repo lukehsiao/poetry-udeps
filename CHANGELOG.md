@@ -1,3 +1,11 @@
+## [0.1.2] - 2023-08-08
+
+### Refactor
+- Clean up info-level log formatting
+
+[0.1.2]: https://github.com/lukehsiao/git-stats/compare/v0.1.1...v0.1.2
+
+
 ## [0.1.1] - 2023-08-08
 
 ### Bug Fixes
