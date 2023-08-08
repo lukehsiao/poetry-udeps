@@ -36,6 +36,7 @@ pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "opensearch-py" => "opensearchpy",
     "pdfminer.six" => "pdfminer",
     "protobuf" => "google.protobuf",
+    "pybars3" => "pybars",
     "python-jose" => "jose",
     "python-multipart" => "multipart",
     "python-slugify" => "slugify",
