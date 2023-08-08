@@ -83,6 +83,7 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
         .as_table()
         .unwrap()
         .keys()
+        .filter(|s| *s != "python")
         .for_each(|s| {
             let package = String::from(s);
             dependencies.insert(package.clone(), vec![]);
