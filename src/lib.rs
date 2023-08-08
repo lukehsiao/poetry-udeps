@@ -11,7 +11,7 @@ use clap::Parser;
 use clap_verbosity_flag::{Verbosity, WarnLevel};
 use ignore::{types::TypesBuilder, WalkBuilder};
 use toml::Value;
-use tracing::info;
+use tracing::{debug, info};
 use xshell::{cmd, Shell};
 
 mod name_map;
@@ -123,6 +123,12 @@ pub fn run(cli: Cli) -> Result<()> {
     let check_dev_deps = cli.dev;
     let stdout_thread = thread::spawn(move || -> io::Result<()> {
         for (import, path) in rx {
+            debug!(
+                package = import.package,
+                module = import.module,
+                path = path.to_str(),
+                "Checking import",
+            );
             // Packages may have several aliases
             let mut aliases = vec![];
             if !import.module.is_empty() {
@@ -147,7 +153,10 @@ pub fn run(cli: Cli) -> Result<()> {
             if let Some(p) = import.package.split_once('.') {
                 aliases.push(p.0.to_string());
             }
+
+            // Just the package
             aliases.push(import.package);
+
             for alias in aliases {
                 if main_deps.contains_key(&alias) {
                     if let Some(v) = main_deps.remove(&alias) {

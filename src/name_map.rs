@@ -5,6 +5,9 @@ use phf::phf_ordered_map;
 ///
 /// This is required because there is not always a programatic way to determine this mapping [[1]].
 ///
+/// Some entries in the map also exploit the set of aliases we automatically
+/// generate (e.g., databricks-sql), to improve the mapping.
+///
 /// If you would like to add or improve this list, please file a PR:
 /// <https://github.com/lukehsiao/poetry-udeps>.
 ///
