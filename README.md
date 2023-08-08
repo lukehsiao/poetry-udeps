@@ -18,10 +18,17 @@
 <br>
 
 
-## TODO
+### Related Tools
 
-- Performance comparisons to deptry and pip-extra-reqs
-- section for trophy case
+- [deptry](https://github.com/fpgmaas/deptry) ![python](https://img.shields.io/badge/lang-python-cornflowerblue): Find unused, missing and transitive dependencies in a Python project. 
+- [pip-check-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) ![python](https://img.shields.io/badge/lang-python-cornflowerblue): find packages that should be in requirements for a project 
+
+## Trophy Case
+
+Currently empty.
+
+## Roadmap
+
 - Better logging. E.g., the ability to increase verbosity and see where dependencies are referenced
   as they are removed from the set.
 - Ability to distinguish if deps were removed from the set by the projects deps (i.e., during the
