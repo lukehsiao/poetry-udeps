@@ -29,6 +29,7 @@ pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "faiss-cpu" => "faiss",
     "faiss-gpu" => "faiss",
     "google-api-python-client" => "googleapiclient",
+    "google-cloud-pubsub" => "google-cloud-pubsub_v1",
     "grpcio" => "grpc",
     "hydra-colorlog" => "colorlog",
     "hydra-core" => "hydra",
