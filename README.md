@@ -59,7 +59,9 @@ Options:
 ## Related Tools
 
 - [deptry](https://github.com/fpgmaas/deptry) (python): Find unused, missing and transitive dependencies in a Python project. 
-- [pip-extra-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) (python): find packages that should be in requirements for a project 
+- [pip-extra-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) (python): find packages that should be in requirements for a project.
+- [fawltydeps](https://github.com/tweag/FawltyDeps) (python): Python dependency checker.
+- [py-unused-deps](https://github.com/matthewhughes934/py-unused-deps) (python): Find unused dependencies in your Python packages.
 
 ### Benchmarks
 
@@ -80,6 +82,7 @@ The target repository is a private repository consisting of ~100k lines of Pytho
 
 #### Results
 
+##### poetry-udeps
 ```
 ❯ hyperfine --warmup 2 'poetry-udeps'
 Benchmark 1: poetry-udeps
@@ -87,6 +90,7 @@ Benchmark 1: poetry-udeps
   Range (min … max):   111.6 ms … 123.5 ms    26 runs
 ```
 
+##### deptry
 For `deptry`, only `DEP002` (unused dependencies) is considered.
 
 ```
@@ -96,6 +100,7 @@ Benchmark 1: deptry -i DEP001,DEP003,DEP004 .
   Range (min … max):    1.043 s …  1.116 s    10 runs
 ```
 
+##### pip-extra-reqs
 `pip-extra-reqs` was unable to run on this project.
 
 ```
@@ -116,6 +121,19 @@ Traceback (most recent call last):
                                ^
 SyntaxError: invalid decimal literal
 ```
+
+##### fawltydeps
+```
+❯ hyperfine --warmup 2 -i 'fawltydeps --check-unused --deps pyproject.toml'
+Benchmark 1: fawltydeps --check-unused --deps pyproject.toml
+  Time (mean ± σ):      3.824 s ±  0.043 s    [User: 3.628 s, System: 0.196 s]
+  Range (min … max):    3.793 s …  3.916 s    10 runs
+```
+
+##### py-unused-deps
+
+I was unable to successfully run `py-unused-deps` on this project.
+
 
 ## Trophy Case
 
