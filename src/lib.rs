@@ -135,7 +135,7 @@ pub fn run(cli: Cli) -> Result<()> {
                 // Google-style package naming
                 aliases.push(format!(
                     "{}-{}",
-                    import.package.replace(',', "-"),
+                    import.package.replace('.', "-"),
                     import.module
                 ));
             }
