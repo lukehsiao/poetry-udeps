@@ -66,48 +66,70 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
     // TODO: map package name to actual module name.
     // Ref: https://stackoverflow.com/a/54853084
     let value = toml.parse::<Value>()?;
-    let dep_key = match deps {
-        DepType::Main => "dependencies",
-        DepType::Dev => "dev-dependencies",
+    let dep_table = match deps {
+        DepType::Main => value
+            .get("tool")
+            .unwrap()
+            .get("poetry")
+            .unwrap()
+            .get("dependencies")
+            .unwrap()
+            .as_table()
+            .unwrap(),
+        DepType::Dev => {
+            match value
+                .get("tool")
+                .unwrap()
+                .get("poetry")
+                .unwrap()
+                .get("dev-dependencies")
+            {
+                // Check poetry <1.2's dev-depenencies
+                Some(dev) => dev.as_table().unwrap(),
+                // Check poetry 1.2+'s dependency groups
+                None => value
+                    .get("tool")
+                    .unwrap()
+                    .get("poetry")
+                    .unwrap()
+                    .get("group")
+                    .unwrap()
+                    .get("dev")
+                    .unwrap()
+                    .get("dependencies")
+                    .unwrap()
+                    .as_table()
+                    .unwrap(),
+            }
+        }
     };
     let mut dependencies: BTreeMap<String, Vec<String>> = BTreeMap::new();
 
     // Generate a list of possible aliases for the package
-    value
-        .get("tool")
-        .unwrap()
-        .get("poetry")
-        .unwrap()
-        .get(dep_key)
-        .unwrap()
-        .as_table()
-        .unwrap()
-        .keys()
-        .filter(|s| *s != "python")
-        .for_each(|s| {
-            let package = String::from(s);
-            dependencies.insert(package.clone(), vec![]);
-            let mut alias = KNOWN_NAMES.get(&package).map(|a| String::from(*a));
+    dep_table.keys().filter(|s| *s != "python").for_each(|s| {
+        let package = String::from(s);
+        dependencies.insert(package.clone(), vec![]);
+        let mut alias = KNOWN_NAMES.get(&package).map(|a| String::from(*a));
 
-            // Try to grab from top_level.txt
-            // Commented out because this is way to freakin slow.
-            // {
-            //     let bash = format!(r#"cat $(poetry run python -c "import pkg_resources; print(pkg_resources.get_distribution('{}').egg_info)" 2>/dev/null )/top_level.txt 2> /dev/null"#, package);
-            //     cmd!(sh, "bash -c {bash}").quiet().read().unwrap_or(String::new()).split_whitespace().for_each(|a| {
-            //         dependencies.insert(String::from(a), Some(package.clone()));
-            //     })
-            // }
+        // Try to grab from top_level.txt
+        // Commented out because this is way to freakin slow.
+        // {
+        //     let bash = format!(r#"cat $(poetry run python -c "import pkg_resources; print(pkg_resources.get_distribution('{}').egg_info)" 2>/dev/null )/top_level.txt 2> /dev/null"#, package);
+        //     cmd!(sh, "bash -c {bash}").quiet().read().unwrap_or(String::new()).split_whitespace().for_each(|a| {
+        //         dependencies.insert(String::from(a), Some(package.clone()));
+        //     })
+        // }
 
-            // Or basic replacement
-            if alias.is_none() && package.contains('-') {
-                alias = Some(package.replace('-', "_").to_lowercase())
-            }
-            if let Some(a) = alias {
-                dependencies.entry(a).or_insert_with(Vec::new).push(package)
-            } else {
-                dependencies.insert(package, vec![]);
-            }
-        });
+        // Or basic replacement
+        if alias.is_none() && package.contains('-') {
+            alias = Some(package.replace('-', "_").to_lowercase())
+        }
+        if let Some(a) = alias {
+            dependencies.entry(a).or_insert_with(Vec::new).push(package)
+        } else {
+            dependencies.insert(package, vec![]);
+        }
+    });
     Ok(dependencies)
 }
 
