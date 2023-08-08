@@ -20,6 +20,11 @@
 `poetry-udeps` is inspired by [`cargo-udeps`](https://github.com/est31/cargo-udeps) and is a tool for finding unused dependencies in a [Poetry](https://python-poetry.org/)-based Python project.
 That is, finding unused dependencies in `pyproject.toml`.
 
+Python dependencies do not always map 1:1 with their package names. 
+Consequently, it is _likely_ that you will see false positives.
+Hopefully, the list of positives is small enough for this tool to be useful, and to be easy to manually audit.
+
+Additional name mappings can be added to [`src/name_map.rs`](src/name_map.rs) to improve accuracy.
 
 ## Install
 
@@ -124,12 +129,3 @@ This tool is distributed under the terms of the Blue Oak license.
 Any contributions are licensed under the same license, and acknowledge via the [Developer Certificate of Origin](https://developercertificate.org/).
 
 See [LICENSE](LICENSE) for details.
-
-## Roadmap
-
-- Better logging. E.g., the ability to increase verbosity and see where dependencies are referenced
-  as they are removed from the set.
-- Ability to distinguish if deps were removed from the set by the projects deps (i.e., during the
-  venv scan), or by the project itself.
-- Ability to parse jupyter notebooks. This would likely introduce a dependency like jupyter to use
-  `nbconvert`. Lower priority.
