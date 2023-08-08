@@ -114,9 +114,9 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
 pub fn run(cli: Cli) -> Result<()> {
     let pyproject_path = Path::new("pyproject.toml");
     let mut main_deps = get_dependencies(pyproject_path, DepType::Main)?;
-    info!(main_deps = format!("{main_deps:?}"));
+    info!(?main_deps);
     let mut dev_deps = get_dependencies(pyproject_path, DepType::Dev)?;
-    info!(dev_deps = format!("{dev_deps:?}"));
+    info!(?dev_deps);
 
     let (tx, rx) = flume::bounded::<(ImportStatement, PathBuf)>(100);
 
