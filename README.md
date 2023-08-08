@@ -17,6 +17,39 @@
 </div>
 <br>
 
+`poetry-udeps` is inspired by [`cargo-udeps`](https://github.com/est31/cargo-udeps) and is a tool for finding unused dependencies in a [Poetry](https://python-poetry.org/)-based Python project.
+That is, finding unused dependencies in `pyproject.toml`.
+
+
+## Install
+
+This tool expects that you run it where you have `poetry` on your `$PATH`.
+
+### From crates.io
+
+```
+cargo install poetry-udeps --locked
+```
+
+## Usage
+
+This is meant to be run in the root of your Poetry project.
+
+```
+Find unused dependencies in pyproject.toml
+
+Usage: poetry-udeps [OPTIONS]
+
+Options:
+  -v, --verbose...  More output per occurrence
+  -q, --quiet...    Less output per occurrence
+  -e, --virtualenv  Whether to look for dependency usage in the poetry
+                    virtualenv
+  -d, --dev         Whether to look for unused dependencies from
+                    dev-dependencies
+  -h, --help        Print help (see more with '--help')
+  -V, --version     Print version
+```
 
 ### Related Tools
 
@@ -25,7 +58,16 @@
 
 ## Trophy Case
 
-Currently empty.
+This is a list of cases where unused dependencies were found using `poetry-udeps`. You are welcome to expand it:
+
+- TODO
+
+## License
+
+This tool is distributed under the terms of the Blue Oak license.
+Any contributions are licensed under the same license, and acknowledge via the [Developer Certificate of Origin](https://developercertificate.org/).
+
+See [LICENSE](LICENSE) for details.
 
 ## Roadmap
 
