@@ -16,3 +16,7 @@
 - (name-map) Include more common packages
 
 [0.1.1]: https://github.com/lukehsiao/git-stats/compare/v0.1.0...v0.1.1
+
+## 0.1.0 - 2023-08-08
+
+Initial release.
