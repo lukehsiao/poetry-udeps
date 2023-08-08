@@ -154,6 +154,14 @@ pub fn run(cli: Cli) -> Result<()> {
                 aliases.push(p.0.to_string());
             }
 
+            // Include parent packages after 1 level deep.
+            // This is to catch things like
+            // `from google.auth.transport import requests` --> google-auth
+            let v: Vec<&str> = import.package.split('.').collect();
+            if v.len() >= 2 {
+                aliases.push(format!("{}-{}", v[0], v[1]));
+            }
+
             // Just the package
             aliases.push(import.package);
 
