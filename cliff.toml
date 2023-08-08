@@ -25,7 +25,7 @@ body = """
         {% endif -%}
     {% endfor %}
 {% endfor -%}
-{% if previous.version %}
+{% if previous.version -%}
     {% if version -%}
         [{{ version | trim_start_matches(pat="v") }}]: https://github.com/lukehsiao/git-stats/compare/{{ previous.version }}...{{ version }}
     {% else -%}
