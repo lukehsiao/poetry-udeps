@@ -51,10 +51,14 @@ Options:
   -V, --version     Print version
 ```
 
-### Related Tools
+## Related Tools
 
 - [deptry](https://github.com/fpgmaas/deptry) (python): Find unused, missing and transitive dependencies in a Python project. 
 - [pip-check-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) (python): find packages that should be in requirements for a project 
+
+### Benchmarks
+
+TODO
 
 ## Trophy Case
 
