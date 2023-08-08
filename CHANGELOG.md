@@ -1,3 +1,19 @@
+## [0.1.3] - 2023-08-08
+
+### Bug Fixes
+- Support poetry 1.2+'s dependency groups
+
+### Documentation
+- (README) Set expectation of false positives
+- (README) Add fawltydeps, py-unused-deps
+
+### Miscellaneous Tasks
+- (name_map) Add `pybars3`
+- (name_map) Add `google-cloud-pubsub`
+
+[0.1.3]: https://github.com/lukehsiao/git-stats/compare/v0.1.2...v0.1.3
+
+
 ## [0.1.2] - 2023-08-08
 
 ### Refactor
