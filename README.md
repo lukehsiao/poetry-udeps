@@ -53,8 +53,8 @@ Options:
 
 ### Related Tools
 
-- [deptry](https://github.com/fpgmaas/deptry) ![python](https://img.shields.io/badge/lang-python-cornflowerblue): Find unused, missing and transitive dependencies in a Python project. 
-- [pip-check-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) ![python](https://img.shields.io/badge/lang-python-cornflowerblue): find packages that should be in requirements for a project 
+- [deptry](https://github.com/fpgmaas/deptry) (python): Find unused, missing and transitive dependencies in a Python project. 
+- [pip-check-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) (python): find packages that should be in requirements for a project 
 
 ## Trophy Case
 
