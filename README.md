@@ -13,14 +13,16 @@
   <a href="https://crates.io/crates/poetry-udeps">
     <img src="https://img.shields.io/crates/v/poetry-udeps" alt="Version">
   </a>
-  <img src="https://img.shields.io/crates/l/poetry-udeps" alt="License">
+  <a href="https://github.com/lukehsiao/poetry-udeps/blob/main/LICENSE">
+    <img src="https://img.shields.io/crates/l/poetry-udeps" alt="License">
+  </a>
 </div>
 <br>
 
 `poetry-udeps` is inspired by [`cargo-udeps`](https://github.com/est31/cargo-udeps) and is a tool for finding unused dependencies in a [Poetry](https://python-poetry.org/)-based Python project.
 That is, finding unused dependencies in `pyproject.toml`.
 
-Python dependencies do not always map 1:1 with their package names. 
+Python dependencies do not always map 1:1 with their package names.
 Consequently, it is _likely_ that you will see false positives.
 Hopefully, the list of positives is small enough for this tool to be useful, and to be easy to manually audit.
 
@@ -58,7 +60,7 @@ Options:
 
 ## Related Tools
 
-- [deptry](https://github.com/fpgmaas/deptry) (python): Find unused, missing and transitive dependencies in a Python project. 
+- [deptry](https://github.com/fpgmaas/deptry) (python): Find unused, missing and transitive dependencies in a Python project.
 - [pip-extra-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) (python): find packages that should be in requirements for a project.
 - [fawltydeps](https://github.com/tweag/FawltyDeps) (python): Python dependency checker.
 - [py-unused-deps](https://github.com/matthewhughes934/py-unused-deps) (python): Find unused dependencies in your Python packages.
@@ -133,7 +135,6 @@ Benchmark 1: fawltydeps --check-unused --deps pyproject.toml
 ##### py-unused-deps
 
 I was unable to successfully run `py-unused-deps` on this project.
-
 
 ## Trophy Case
 
