@@ -125,7 +125,7 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
             alias = Some(package.replace('-', "_").to_lowercase())
         }
         if let Some(a) = alias {
-            dependencies.entry(a).or_insert_with(Vec::new).push(package)
+            dependencies.entry(a).or_default().push(package)
         } else {
             dependencies.insert(package, vec![]);
         }
