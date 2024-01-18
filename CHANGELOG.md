@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.1.5](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.4..v0.1.5) - 2024-01-18
+
+### Refactor
+
+- address clippy lint for `or_default()` - ([c89d6f6](https://github.com/lukehsiao/poetry-udeps/commit/c89d6f658ffb9cb7148bee0f85ebc11da6cfb01f)) - Luke Hsiao
+
+---
 ## [0.1.4](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.3..v0.1.4) - 2024-01-18
 
 ### Documentation
