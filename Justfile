@@ -7,6 +7,18 @@ _default:
 check:
 	cargo clippy --locked -- -D warnings
 
+# check security advisories
+audit:
+	cargo deny check advisories
+
+# check for semver violations
+semver:
+	cargo semver-checks check-release
+
+# Check links in markdown files
+link-check:
+	-lychee -E '**/*.md'
+
 # Runs nextest
 test:
 	cargo nextest run
@@ -27,10 +39,10 @@ _update_changelog version:
 	    exit
 	fi
 
-	git-cliff --unreleased --tag {{version}} --prepend CHANGELOG.md
+	git-cliff --bump --unreleased --prepend CHANGELOG.md
 	${EDITOR:-vi} CHANGELOG.md
 	git commit CHANGELOG.md -m "docs(CHANGELOG): add entry for {{version}}"
-	
+
 # Increment the version
 _incr_version version: (_update_changelog version)
 	#!/usr/bin/env bash
@@ -44,13 +56,12 @@ _incr_version version: (_update_changelog version)
 # Get the changelog and git stats for the release
 _tlog describe version:
 	# Format git-cliff output friendly for the tag
-	@git cliff --unreleased --tag {{version}} | sd "(^## .*\n\s+|^See the.*|^\[.*|^\s*$|^###\s)" ""
+	@git cliff -c minimal --strip all --unreleased --tag {{version}} | sd "(^## .*\n\s+|^See the.*|^\[.*|^\s*$|^###\s)" ""
 	@echo "$ git stats -r {{describe}}..{{version}}"
 	@git stats -r {{describe}}..HEAD
-	
 
 # Target can be ["major", "minor", "patch", or a version]
-release target:
+release target: semver
 	#!/usr/bin/env python3
 	# Inspired-by: https://git.sr.ht/~sircmpwn/dotfiles/tree/master/bin/semver
 	import os
@@ -109,7 +120,6 @@ release target:
 	    f.flush()
 	    subprocess.run(["git", "tag", "-e", "-F", f.name, "-a", new_version])
 	    print(new_version)
-
 
 # Publish a new version on crates.io
 publish:
