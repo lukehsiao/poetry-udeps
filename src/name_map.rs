@@ -24,6 +24,7 @@ pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "argon2-cffi" => "argon2",
     "beautifulsoup4" => "bs4",
     "boto3-stubs" => "mypy_boto3_iam",
+    "celery-redbeat" => "redbeat",
     "databricks-sdk" => "databricks.sdk",
     "databricks-sql-connector" => "databricks-sql",
     "faiss-cpu" => "faiss",
