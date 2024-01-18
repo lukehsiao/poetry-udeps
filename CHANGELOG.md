@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
-## [unreleased]
+## [0.1.4](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.3..v0.1.4) - 2024-01-18
 
 ### Documentation
 
