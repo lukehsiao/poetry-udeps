@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.1.6](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.5..v0.1.6) - 2024-01-18
+
+### Bug Fixes
+
+- **(name_map)** add alias for `celery-redbeat` - ([c197b58](https://github.com/lukehsiao/poetry-udeps/commit/c197b58b25684bccbfbb38da23b9b10859aa1de3)) - Luke Hsiao
+
+### Styling
+
+- format with cargo fmt - ([2073598](https://github.com/lukehsiao/poetry-udeps/commit/2073598446f0c0fbe39ca27c5e5d123bdf78c893)) - Luke Hsiao
+
+---
 ## [0.1.5](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.4..v0.1.5) - 2024-01-18
 
 ### Refactor
