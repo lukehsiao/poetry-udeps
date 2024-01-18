@@ -56,7 +56,9 @@ mod tests {
     fn known_names_are_sorted() {
         let mut names = KNOWN_NAMES.entries().map(|(name, _alias)| name);
 
-        let Some(mut previous_name) = names.next() else { return; };
+        let Some(mut previous_name) = names.next() else {
+            return;
+        };
 
         for name in names {
             assert!(
