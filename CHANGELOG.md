@@ -3,14 +3,22 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
-## [0.2.1](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.1..v0.2.1) - 2024-01-20
+## [0.2.1](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.0..v0.2.1) - 2024-01-20
 
 ### Bug Fixes
 
 - only return 1 if udeps were found - ([4cc7015](https://github.com/lukehsiao/poetry-udeps/commit/4cc7015b742bf3654f16cf164ba64b539d1bf8a3)) - Luke Hsiao
 
+### Documentation
+
+- **(CHANGELOG)** add entry for v0.2.1 - ([aeed851](https://github.com/lukehsiao/poetry-udeps/commit/aeed85187cf2fdac4ce98bf5da121737ece5995b)) - Luke Hsiao
+
 ---
-## [0.2.0](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.0..v0.2.0) - 2024-01-20
+## [0.2.0](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.6..v0.2.0) - 2024-01-20
+
+### Documentation
+
+- **(CHANGELOG)** add entry for v0.2.0 - ([d0368a2](https://github.com/lukehsiao/poetry-udeps/commit/d0368a2f1dd007adf5fd15c62a818ca2032356bc)) - Luke Hsiao
 
 ### Refactor
 
@@ -124,3 +132,4 @@ All notable changes to this project will be documented in this file. See [conven
 ### WIP
 
 - adding nom parser combinator for getting packages - ([a8aa949](https://github.com/lukehsiao/poetry-udeps/commit/a8aa9490fbc5aeecbc565351877fe118465ac487)) - Luke Hsiao
+
