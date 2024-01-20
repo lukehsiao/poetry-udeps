@@ -1,6 +1,6 @@
 [package]
 name = "poetry-udeps"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["Luke Hsiao <luke@hsiao.dev>"]
 description = "Find unused dependencies in pyproject.toml"
