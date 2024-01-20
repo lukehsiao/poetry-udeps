@@ -133,7 +133,7 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
     Ok(dependencies)
 }
 
-pub fn run(cli: Cli) -> Result<()> {
+pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
     let pyproject_path = Path::new("pyproject.toml");
     let mut main_deps = get_dependencies(pyproject_path, DepType::Main)?;
     info!(?main_deps);
@@ -144,7 +144,7 @@ pub fn run(cli: Cli) -> Result<()> {
 
     // Setup main thread for stdout
     let check_dev_deps = cli.dev;
-    let stdout_thread = thread::spawn(move || -> io::Result<()> {
+    let stdout_thread = thread::spawn(move || -> io::Result<Vec<String>> {
         for (import, path) in rx {
             debug!(
                 package = import.package,
@@ -216,22 +216,23 @@ pub fn run(cli: Cli) -> Result<()> {
             }
         }
 
+        let mut udeps = Vec::new();
         for (key, value) in main_deps.iter() {
             // Only print the non-alias names
             if value.is_empty() {
-                println!("{}", key)
+                udeps.push(key.to_owned());
             }
         }
         if check_dev_deps {
             for (key, value) in dev_deps.iter() {
                 // Only print the non-alias names
                 if value.is_empty() {
-                    println!("{}", key)
+                    udeps.push(key.to_owned());
                 }
             }
         }
 
-        Ok(())
+        Ok(udeps)
     });
 
     if cli.virtualenv {
@@ -298,17 +299,20 @@ pub fn run(cli: Cli) -> Result<()> {
     drop(tx);
     match stdout_thread.join() {
         Ok(j) => {
-            if let Err(err) = j {
-                // A broken pipe means graceful termination, so fall through.
-                // Otherwise, something bad happened while writing to stdout, so bubble
-                // it up.
-                if err.kind() != io::ErrorKind::BrokenPipe {
-                    return Err(err.into());
+            match j {
+                Ok(deps) => Ok(Some(deps)),
+                Err(err) => {
+                    // A broken pipe means graceful termination, so fall through.
+                    // Otherwise, something bad happened while writing to stdout, so bubble
+                    // it up.
+                    if err.kind() != io::ErrorKind::BrokenPipe {
+                        Err(err.into())
+                    } else {
+                        Ok(None)
+                    }
                 }
             }
         }
         Err(_) => todo!(),
     }
-
-    Ok(())
 }

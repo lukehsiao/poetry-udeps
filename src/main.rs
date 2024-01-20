@@ -10,7 +10,13 @@ fn main() {
         .init();
 
     match run(cli) {
-        Ok(_) => process::exit(0),
+        Ok(Some(deps)) => {
+            for dep in deps {
+                println!("{}", dep);
+            }
+            process::exit(1);
+        }
+        Ok(None) => process::exit(0),
         Err(e) => {
             eprintln!("{}", e);
             process::exit(2)
