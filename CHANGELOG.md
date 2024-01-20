@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.0](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.0..v0.2.0) - 2024-01-20
+
+### Refactor
+
+-  [**breaking**] return an exit code 1 if udeps were found - ([775ac08](https://github.com/lukehsiao/poetry-udeps/commit/775ac08cd0ae4b1dcc6141cef3b91f7cadf7d6ce)) - Luke Hsiao
+
+---
 ## [0.1.6](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.5..v0.1.6) - 2024-01-18
 
 ### Bug Fixes
@@ -110,4 +117,3 @@ All notable changes to this project will be documented in this file. See [conven
 ### WIP
 
 - adding nom parser combinator for getting packages - ([a8aa949](https://github.com/lukehsiao/poetry-udeps/commit/a8aa9490fbc5aeecbc565351877fe118465ac487)) - Luke Hsiao
-
