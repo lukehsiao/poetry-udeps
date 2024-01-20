@@ -9,12 +9,20 @@ All notable changes to this project will be documented in this file. See [conven
 
 - **(name_map)** add alias for `celery-redbeat` - ([c197b58](https://github.com/lukehsiao/poetry-udeps/commit/c197b58b25684bccbfbb38da23b9b10859aa1de3)) - Luke Hsiao
 
+### Documentation
+
+- **(CHANGELOG)** add entry for v0.1.6 - ([5ba79a9](https://github.com/lukehsiao/poetry-udeps/commit/5ba79a9c5ee02f2f20b2054ffd8dda1150edfb01)) - Luke Hsiao
+
 ### Styling
 
 - format with cargo fmt - ([2073598](https://github.com/lukehsiao/poetry-udeps/commit/2073598446f0c0fbe39ca27c5e5d123bdf78c893)) - Luke Hsiao
 
 ---
 ## [0.1.5](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.4..v0.1.5) - 2024-01-18
+
+### Documentation
+
+- **(CHANGELOG)** add entry for v0.1.5 - ([8341790](https://github.com/lukehsiao/poetry-udeps/commit/8341790778cab6e7d3d1eb87b32611d3476671e6)) - Luke Hsiao
 
 ### Refactor
 
@@ -25,10 +33,11 @@ All notable changes to this project will be documented in this file. See [conven
 
 ### Documentation
 
+- **(CHANGELOG)** add entry for v0.1.4 - ([d7eb582](https://github.com/lukehsiao/poetry-udeps/commit/d7eb582e9190c2313d7ab49bafa1097de53a1c62)) - Luke Hsiao
 - **(README)** link license badge to license - ([c6a4229](https://github.com/lukehsiao/poetry-udeps/commit/c6a4229d8feb1d3d2234547a3cc9a4a40144a3ab)) - Luke Hsiao
 
 ---
-## [0.1.3](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.2..vv0.1.3) - 2023-08-08
+## [0.1.3](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.2..v0.1.3) - 2023-08-08
 
 ### Bug Fixes
 
@@ -41,7 +50,7 @@ All notable changes to this project will be documented in this file. See [conven
 - **(README)** add fawltydeps, py-unused-deps - ([910671d](https://github.com/lukehsiao/poetry-udeps/commit/910671d166cf5225aadd8a07d3db4936b73182bc)) - Luke Hsiao
 
 ---
-## [0.1.2](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.1..vv0.1.2) - 2023-08-08
+## [0.1.2](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.1..v0.1.2) - 2023-08-08
 
 ### Documentation
 
@@ -52,7 +61,7 @@ All notable changes to this project will be documented in this file. See [conven
 - clean up info-level log formatting - ([33c67bc](https://github.com/lukehsiao/poetry-udeps/commit/33c67bc533e17cfedaac6653b5364cd684574b53)) - Luke Hsiao
 
 ---
-## [0.1.1](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.0..vv0.1.1) - 2023-08-08
+## [0.1.1](https://github.com/lukehsiao/poetry-udeps/compare/v0.1.0..v0.1.1) - 2023-08-08
 
 ### Bug Fixes
 
@@ -101,3 +110,4 @@ All notable changes to this project will be documented in this file. See [conven
 ### WIP
 
 - adding nom parser combinator for getting packages - ([a8aa949](https://github.com/lukehsiao/poetry-udeps/commit/a8aa9490fbc5aeecbc565351877fe118465ac487)) - Luke Hsiao
+
