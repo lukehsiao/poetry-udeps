@@ -144,7 +144,7 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
 
     // Setup main thread for stdout
     let check_dev_deps = cli.dev;
-    let stdout_thread = thread::spawn(move || -> io::Result<Vec<String>> {
+    let stdout_thread = thread::spawn(move || -> io::Result<Option<Vec<String>>> {
         for (import, path) in rx {
             debug!(
                 package = import.package,
@@ -232,7 +232,11 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
             }
         }
 
-        Ok(udeps)
+        if udeps.is_empty() {
+            Ok(None)
+        } else {
+            Ok(Some(udeps))
+        }
     });
 
     if cli.virtualenv {
@@ -300,7 +304,7 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
     match stdout_thread.join() {
         Ok(j) => {
             match j {
-                Ok(deps) => Ok(Some(deps)),
+                Ok(deps) => Ok(deps),
                 Err(err) => {
                     // A broken pipe means graceful termination, so fall through.
                     // Otherwise, something bad happened while writing to stdout, so bubble
