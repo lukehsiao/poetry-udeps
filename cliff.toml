@@ -73,11 +73,11 @@ filter_commits = false
 # glob pattern for matching git tags
 tag_pattern = "v[0-9]*"
 # regex for skipping tags
-skip_tags = "v0.1.0-beta.1"
+# skip_tags = "v0.1.0-beta.1"
 # regex for ignoring tags
-ignore_tags = "python-v[0-9]*"
+# ignore_tags = "python-v[0-9]*"
 # sort the tags chronologically
-date_order = true
+topo_order = false
 # sort the commits inside sections by oldest/newest order
 sort_commits = "oldest"
 link_parsers = [
