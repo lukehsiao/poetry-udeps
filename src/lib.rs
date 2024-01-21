@@ -8,7 +8,7 @@ use std::{
 
 use anyhow::Result;
 use clap::Parser;
-use clap_verbosity_flag::{Verbosity, WarnLevel};
+use clap_verbosity_flag::Verbosity;
 use ignore::{types::TypesBuilder, WalkBuilder};
 use toml::Value;
 use tracing::{debug, info};
@@ -23,7 +23,7 @@ use crate::parser::{parse_python_file, ImportStatement};
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
     #[clap(flatten)]
-    pub verbose: Verbosity<WarnLevel>,
+    pub verbose: Verbosity,
     #[arg(short = 'e', long)]
     /// Whether to look for dependency usage in the poetry virtualenv.
     ///
