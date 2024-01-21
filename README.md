@@ -28,6 +28,17 @@ Hopefully, the list of positives is small enough for this tool to be useful, and
 
 Additional name mappings can be added to [`src/name_map.rs`](src/name_map.rs) to improve accuracy.
 
+**Contents**
+
+-   [Install](#install)
+    -   [From crates.io](#from-crates.io)
+-   [Usage](#usage)
+-   [How does this work?](#how-does-this-work)
+-   [Related Tools](#related-tools)
+    -   [Benchmarks](#benchmarks)
+-   [Trophy Case](#trophy-case)
+-   [License](#license)
+
 ## Install
 
 This tool expects that you run it where you have `poetry` on your `$PATH`.
@@ -57,6 +68,15 @@ Options:
   -h, --help        Print help (see more with '--help')
   -V, --version     Print version
 ```
+
+## How does this work?
+
+This is a very simple parsing approach.
+That is, `poetry-udeps` doesn't interpret any Python, we just literally search through all the files in the project for import statements which match the package names (or their aliases as defined by the embedded name map).
+This means it is fast!
+But, it also means there are some false positives that it simply cannot detect.
+For example, sqlalchemy's async sessions might depend on `asyncpg`, even though your immediate project never imports it.
+To help with that (somewhat), you can use the option (`--virtualenv`) to include searching through all the Python files in your poetry environment as well.
 
 ## Related Tools
 
