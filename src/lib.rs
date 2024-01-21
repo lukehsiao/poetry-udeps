@@ -11,7 +11,7 @@ use clap::Parser;
 use clap_verbosity_flag::Verbosity;
 use ignore::{types::TypesBuilder, WalkBuilder};
 use toml::Value;
-use tracing::{debug, info};
+use tracing::{debug, error, info};
 use xshell::{cmd, Shell};
 
 mod name_map;
@@ -135,6 +135,19 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
 
 pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
     let pyproject_path = Path::new("pyproject.toml");
+
+    match pyproject_path.try_exists() {
+        Ok(true) => (),
+        Ok(false) => {
+            error!("pyproject.toml not found. Are you in the root directory of your project?",);
+            // Just fall through, the subsequent read will raise the error for us
+        }
+        Err(e) => {
+            error!("pyproject.toml not found. Are you in the root directory of your project?",);
+            return Err(e.into());
+        }
+    }
+
     let mut main_deps = get_dependencies(pyproject_path, DepType::Main)?;
     info!(?main_deps);
     let mut dev_deps = get_dependencies(pyproject_path, DepType::Dev)?;
