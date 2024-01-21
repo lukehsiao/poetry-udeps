@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.2](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.1..v0.2.2) - 2024-01-21
+
+### Documentation
+
+- **(CHANGELOG)** fix links to previous tags - ([8c2e2fe](https://github.com/lukehsiao/poetry-udeps/commit/8c2e2fefad43615db0da2a049abde8e8f5de504f)) - Luke Hsiao
+
+### Refactor
+
+- default to error level, not warn level logs - ([47fc220](https://github.com/lukehsiao/poetry-udeps/commit/47fc22008589d6ee46d5e881dd93bbaa96ef10d4)) - Luke Hsiao
+- log better msg if pyproject.toml not found - ([77a7be7](https://github.com/lukehsiao/poetry-udeps/commit/77a7be79ece6f8cbe99f8ac1fc70d3306eda8583)) - Luke Hsiao
+
+---
 ## [0.2.1](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.0..v0.2.1) - 2024-01-20
 
 ### Bug Fixes
@@ -132,4 +144,3 @@ All notable changes to this project will be documented in this file. See [conven
 ### WIP
 
 - adding nom parser combinator for getting packages - ([a8aa949](https://github.com/lukehsiao/poetry-udeps/commit/a8aa9490fbc5aeecbc565351877fe118465ac487)) - Luke Hsiao
-
