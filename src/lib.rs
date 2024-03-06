@@ -6,7 +6,7 @@ use std::{
     thread,
 };
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use clap::Parser;
 use clap_verbosity_flag::Verbosity;
 use ignore::{types::TypesBuilder, WalkBuilder};
@@ -59,7 +59,7 @@ enum DepType {
 /// We do not simply track the aliases alone, as reporting an alias as obsolete
 /// is not as straightforward to the user which line to eliminate from their
 /// pyproject.toml.
-fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<String>>> {
+fn get_dependencies(file: &Path, deps: DepType) -> Result<Option<BTreeMap<String, Vec<String>>>> {
     // let sh = Shell::new()?;
     let toml = fs::read_to_string(file)?;
 
@@ -67,39 +67,43 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
     // Ref: https://stackoverflow.com/a/54853084
     let value = toml.parse::<Value>()?;
     let dep_table = match deps {
-        DepType::Main => value
-            .get("tool")
-            .unwrap()
-            .get("poetry")
-            .unwrap()
-            .get("dependencies")
-            .unwrap()
-            .as_table()
-            .unwrap(),
-        DepType::Dev => {
+        DepType::Main => {
             match value
                 .get("tool")
-                .unwrap()
-                .get("poetry")
-                .unwrap()
-                .get("dev-dependencies")
+                .and_then(|tool| tool.get("poetry"))
+                .and_then(|poetry| poetry.get("dependencies"))
+                .and_then(|deps| deps.as_table())
             {
-                // Check poetry <1.2's dev-depenencies
-                Some(dev) => dev.as_table().unwrap(),
-                // Check poetry 1.2+'s dependency groups
-                None => value
-                    .get("tool")
-                    .unwrap()
-                    .get("poetry")
-                    .unwrap()
-                    .get("group")
-                    .unwrap()
-                    .get("dev")
-                    .unwrap()
-                    .get("dependencies")
-                    .unwrap()
-                    .as_table()
-                    .unwrap(),
+                Some(deps) => deps,
+                None => bail!("failed to parse dependencies from pyproject.toml"),
+            }
+        }
+        DepType::Dev => {
+            // Check poetry >=1.0,<1.2's dev-dependencies
+            match value
+                .get("tool")
+                .and_then(|tool| tool.get("poetry"))
+                .and_then(|poetry| poetry.get("dev-dependencies"))
+                .and_then(|dev| dev.as_table())
+            {
+                Some(dev) => dev,
+                // Check poetry >=1.2.0's dependency groups
+                None => {
+                    match value
+                        .get("tool")
+                        .and_then(|tool| tool.get("poetry"))
+                        .and_then(|poetry| poetry.get("group"))
+                        .and_then(|group| group.get("dev"))
+                        .and_then(|dev| dev.get("dependencies"))
+                        .and_then(|dependencies| dependencies.as_table())
+                    {
+                        Some(deps) => deps,
+                        None => {
+                            info!("failed to parse dev dependencies from pyproject.toml");
+                            return Ok(None);
+                        }
+                    }
+                }
             }
         }
     };
@@ -130,7 +134,7 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<BTreeMap<String, Vec<S
             dependencies.insert(package, vec![]);
         }
     });
-    Ok(dependencies)
+    Ok(Some(dependencies))
 }
 
 pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
@@ -148,9 +152,12 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
         }
     }
 
-    let mut main_deps = get_dependencies(pyproject_path, DepType::Main)?;
+    let mut main_deps = get_dependencies(pyproject_path, DepType::Main)?.unwrap();
     info!(?main_deps);
-    let mut dev_deps = get_dependencies(pyproject_path, DepType::Dev)?;
+    let mut dev_deps = match get_dependencies(pyproject_path, DepType::Dev)? {
+        Some(deps) => deps,
+        _ => BTreeMap::new(),
+    };
     info!(?dev_deps);
 
     let (tx, rx) = flume::bounded::<(ImportStatement, PathBuf)>(100);
