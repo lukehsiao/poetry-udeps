@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.3](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.2..v0.2.3) - 2024-03-06
+
+### Bug Fixes
+
+- ignore dev-deps if they are missing - ([29e55c1](https://github.com/lukehsiao/poetry-udeps/commit/29e55c1eb7db93efd6b385b34f849c1e885e84b1)) - Luke Hsiao
+
+### Documentation
+
+- **(README)** add toc and description of approach - ([8892b4f](https://github.com/lukehsiao/poetry-udeps/commit/8892b4fd6c14b78d29972bc0aceb8253a847c832)) - Luke Hsiao
+
+---
 ## [0.2.2](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.1..v0.2.2) - 2024-01-21
 
 ### Documentation
