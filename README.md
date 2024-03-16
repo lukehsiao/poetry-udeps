@@ -80,7 +80,7 @@ To help with that (somewhat), you can use the option (`--virtualenv`) to include
 
 ## Related Tools
 
-- [deptry](https://github.com/fpgmaas/deptry) (python): Find unused, missing and transitive dependencies in a Python project.
+- [deptry](https://github.com/fpgmaas/deptry) (python/rust): Find unused, missing and transitive dependencies in a Python project.
 - [pip-extra-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) (python): find packages that should be in requirements for a project.
 - [fawltydeps](https://github.com/tweag/FawltyDeps) (python): Python dependency checker.
 - [py-unused-deps](https://github.com/matthewhughes934/py-unused-deps) (python): Find unused dependencies in your Python packages.
@@ -88,17 +88,17 @@ To help with that (somewhat), you can use the option (`--virtualenv`) to include
 ### Benchmarks
 
 `poetry-udeps` only checks for unused dependencies.
-Below, we benchmark this single feature on a desktop with an AMD Ryzen 7 3700X and 16 GB of RAM.
-The target repository is a private repository consisting of ~100k lines of Python code.
+Below, we benchmark this single feature on a desktop with an AMD Ryzen 7 7800X3D and 64 GB of RAM.
+The target repository is a private repository consisting of ~170k lines of Python code.
 
 ```
 ❯ tokei -C -t Python
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
- Python                699       118239       100522         5464        12253
+ Python                904       194995       167640         9686        17669
 ===============================================================================
- Total                 699       118239       100522         5464        12253
+ Total                 904       194995       167640         9686        17669
 ===============================================================================
 ```
 
@@ -106,20 +106,23 @@ The target repository is a private repository consisting of ~100k lines of Pytho
 
 ##### poetry-udeps
 ```
-❯ hyperfine --warmup 2 'poetry-udeps'
+❯ hyperfine --warmup 2 -i 'poetry-udeps'
 Benchmark 1: poetry-udeps
-  Time (mean ± σ):     116.2 ms ±   2.9 ms    [User: 217.9 ms, System: 12.9 ms]
-  Range (min … max):   111.6 ms … 123.5 ms    26 runs
+  Time (mean ± σ):     110.3 ms ±   0.7 ms    [User: 203.2 ms, System: 15.8 ms]
+  Range (min … max):   108.9 ms … 111.6 ms    27 runs
+
+  Warning: Ignoring non-zero exit code.
 ```
 
 ##### deptry
 For `deptry`, only `DEP002` (unused dependencies) is considered.
+Note this is running deptry v0.14.0, with core parts rewritten in Rust.
 
 ```
 ❯ hyperfine --warmup 2 -i 'deptry -i DEP001,DEP003,DEP004 .'
 Benchmark 1: deptry -i DEP001,DEP003,DEP004 .
-  Time (mean ± σ):      1.065 s ±  0.020 s    [User: 1.038 s, System: 0.026 s]
-  Range (min … max):    1.043 s …  1.116 s    10 runs
+  Time (mean ± σ):     165.2 ms ±   1.8 ms    [User: 389.4 ms, System: 38.9 ms]
+  Range (min … max):   161.6 ms … 168.8 ms    18 runs
 ```
 
 ##### pip-extra-reqs
@@ -128,28 +131,27 @@ Benchmark 1: deptry -i DEP001,DEP003,DEP004 .
 ```
 ❯ pip-extra-reqs .
 Traceback (most recent call last):
-  File "/home/benchmark/.venv/bin/pip-extra-reqs", line 8, in <module>
+  File "/home/lukehsiao/repos/redacted/.venv/bin/pip-extra-reqs", line 8, in <module>
     sys.exit(main())
-  File "/home/benchmark/.venv/lib/python3.10/site-packages/pip_check_reqs/find_extra_reqs.py", line 211, in main
+  File "/home/lukehsiao/repos/redacted/.venv/lib/python3.10/site-packages/pip_check_reqs/find_extra_reqs.py", line 234, in main
     extras = find_extra_reqs(
-  File "/home/benchmark/.venv/lib/python3.10/site-packages/pip_check_reqs/find_extra_reqs.py", line 35, in find_extra_reqs
+  File "/home/lukehsiao/repos/redacted/.venv/lib/python3.10/site-packages/pip_check_reqs/find_extra_reqs.py", line 62, in find_extra_reqs
     used_modules = common.find_imported_modules(
-  File "/home/benchmark/.venv/lib/python3.10/site-packages/pip_check_reqs/common.py", line 153, in find_imported_modules
-    vis.visit(ast.parse(content, str(filename)))
-  File "/home/lukehsiao/.pyenv/versions/3.10.5/lib/python3.10/ast.py", line 50, in parse
-    return compile(source, filename, mode, flags,
-  File "/home/benchmark/.venv/lib/python3.10/site-packages/uuid.py", line 138
-    if not 0 <= time_low < 1<<32L:
-                               ^
-SyntaxError: invalid decimal literal
+  File "/home/lukehsiao/repos/redacted/.venv/lib/python3.10/site-packages/pip_check_reqs/common.py", line 154, in find_imported_modules
+    content = filename.read_text(encoding="utf-8")
+  File "/home/lukehsiao/.pyenv/versions/3.10.13/lib/python3.10/pathlib.py", line 1135, in read_text
+    return f.read()
+  File "/home/lukehsiao/.pyenv/versions/3.10.13/lib/python3.10/codecs.py", line 322, in decode
+    (result, consumed) = self._buffer_decode(data, self.errors, final)
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xb1 in position 81: invalid start byte
 ```
 
 ##### fawltydeps
 ```
 ❯ hyperfine --warmup 2 -i 'fawltydeps --check-unused --deps pyproject.toml'
 Benchmark 1: fawltydeps --check-unused --deps pyproject.toml
-  Time (mean ± σ):      3.824 s ±  0.043 s    [User: 3.628 s, System: 0.196 s]
-  Range (min … max):    3.793 s …  3.916 s    10 runs
+  Time (mean ± σ):      3.570 s ±  0.015 s    [User: 3.179 s, System: 0.379 s]
+  Range (min … max):    3.549 s …  3.595 s    10 runs
 ```
 
 ##### py-unused-deps
