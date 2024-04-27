@@ -9,7 +9,8 @@
 <br>
 <div align="center">
   <a href="https://github.com/lukehsiao/poetry-udeps/actions/workflows/general.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/lukehsiao/poetry-udeps/general.yml" alt="Build Status"></a>
+    <img src="https://img.shields.io/github/actions/workflow/status/lukehsiao/poetry-udeps/general.yml" alt="Build Status">
+  </a>
   <a href="https://crates.io/crates/poetry-udeps">
     <img src="https://img.shields.io/crates/v/poetry-udeps" alt="Version">
   </a>
@@ -84,6 +85,7 @@ To help with that (somewhat), you can use the option (`--virtualenv`) to include
 - [pip-extra-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) (python): find packages that should be in requirements for a project.
 - [fawltydeps](https://github.com/tweag/FawltyDeps) (python): Python dependency checker.
 - [py-unused-deps](https://github.com/matthewhughes934/py-unused-deps) (python): Find unused dependencies in your Python packages.
+- [un-pack](https://github.com/bnkc/unpack) (rust): Unpack python packages from your project and more.
 
 ### Benchmarks
 
