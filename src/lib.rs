@@ -154,10 +154,7 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
 
     let mut main_deps = get_dependencies(pyproject_path, DepType::Main)?.unwrap();
     info!(?main_deps);
-    let mut dev_deps = match get_dependencies(pyproject_path, DepType::Dev)? {
-        Some(deps) => deps,
-        _ => BTreeMap::new(),
-    };
+    let mut dev_deps = get_dependencies(pyproject_path, DepType::Dev)?.unwrap_or_default();
     info!(?dev_deps);
 
     let (tx, rx) = flume::bounded::<(ImportStatement, PathBuf)>(100);
