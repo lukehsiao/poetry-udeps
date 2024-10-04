@@ -9,16 +9,16 @@ fn main() {
         .with_max_level(convert_filter(cli.verbose.log_level_filter()))
         .init();
 
-    match run(cli) {
+    match run(&cli) {
         Ok(Some(deps)) => {
             for dep in deps {
-                println!("{}", dep);
+                println!("{dep}");
             }
             process::exit(1);
         }
         Ok(None) => process::exit(0),
         Err(e) => {
-            eprintln!("{}", e);
+            eprintln!("{e}");
             process::exit(2)
         }
     }
@@ -41,6 +41,6 @@ mod test {
     #[test]
     fn verify_app() {
         use clap::CommandFactory;
-        Cli::command().debug_assert()
+        Cli::command().debug_assert();
     }
 }

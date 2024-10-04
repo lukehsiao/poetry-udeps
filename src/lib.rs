@@ -59,7 +59,7 @@ enum DepType {
 /// We do not simply track the aliases alone, as reporting an alias as obsolete
 /// is not as straightforward to the user which line to eliminate from their
 /// pyproject.toml.
-fn get_dependencies(file: &Path, deps: DepType) -> Result<Option<BTreeMap<String, Vec<String>>>> {
+fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<String, Vec<String>>>> {
     // let sh = Shell::new()?;
     let toml = fs::read_to_string(file)?;
 
@@ -89,7 +89,7 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<Option<BTreeMap<String
                 Some(dev) => dev,
                 // Check poetry >=1.2.0's dependency groups
                 None => {
-                    match value
+                    if let Some(deps) = value
                         .get("tool")
                         .and_then(|tool| tool.get("poetry"))
                         .and_then(|poetry| poetry.get("group"))
@@ -97,11 +97,10 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<Option<BTreeMap<String
                         .and_then(|dev| dev.get("dependencies"))
                         .and_then(|dependencies| dependencies.as_table())
                     {
-                        Some(deps) => deps,
-                        None => {
-                            info!("failed to parse dev dependencies from pyproject.toml");
-                            return Ok(None);
-                        }
+                        deps
+                    } else {
+                        info!("failed to parse dev dependencies from pyproject.toml");
+                        return Ok(None);
                     }
                 }
             }
@@ -126,10 +125,10 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<Option<BTreeMap<String
 
         // Or basic replacement
         if alias.is_none() && package.contains('-') {
-            alias = Some(package.replace('-', "_").to_lowercase())
+            alias = Some(package.replace('-', "_").to_lowercase());
         }
         if let Some(a) = alias {
-            dependencies.entry(a).or_default().push(package)
+            dependencies.entry(a).or_default().push(package);
         } else {
             dependencies.insert(package, vec![]);
         }
@@ -137,7 +136,10 @@ fn get_dependencies(file: &Path, deps: DepType) -> Result<Option<BTreeMap<String
     Ok(Some(dependencies))
 }
 
-pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
+#[allow(clippy::too_many_lines)]
+#[allow(clippy::missing_errors_doc)]
+#[allow(clippy::missing_panics_doc)]
+pub fn run(cli: &Cli) -> Result<Option<Vec<String>>> {
     let pyproject_path = Path::new("pyproject.toml");
 
     match pyproject_path.try_exists() {
@@ -152,9 +154,9 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
         }
     }
 
-    let mut main_deps = get_dependencies(pyproject_path, DepType::Main)?.unwrap();
+    let mut main_deps = get_dependencies(pyproject_path, &DepType::Main)?.unwrap();
     info!(?main_deps);
-    let mut dev_deps = get_dependencies(pyproject_path, DepType::Dev)?.unwrap_or_default();
+    let mut dev_deps = get_dependencies(pyproject_path, &DepType::Dev)?.unwrap_or_default();
     info!(?dev_deps);
 
     let (tx, rx) = flume::bounded::<(ImportStatement, PathBuf)>(100);
@@ -221,7 +223,7 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
                 if dev_deps.contains_key(&alias) {
                     if let Some(v) = dev_deps.remove(&alias) {
                         if v.is_empty() {
-                            info!("Found {} in {}", alias, path.display())
+                            info!("Found {} in {}", alias, path.display());
                         } else {
                             for orig in v {
                                 info!("Found {} in {}", orig, path.display());
@@ -234,14 +236,14 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
         }
 
         let mut udeps = Vec::new();
-        for (key, value) in main_deps.iter() {
+        for (key, value) in &main_deps {
             // Only print the non-alias names
             if value.is_empty() {
                 udeps.push(key.to_owned());
             }
         }
         if check_dev_deps {
-            for (key, value) in dev_deps.iter() {
+            for (key, value) in &dev_deps {
                 // Only print the non-alias names
                 if value.is_empty() {
                     udeps.push(key.to_owned());
@@ -280,7 +282,7 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
 
                         let path = dir.into_path();
                         for import in v {
-                            tx.send((import, path.clone())).unwrap()
+                            tx.send((import, path.clone())).unwrap();
                         }
                     }
                 }
@@ -308,7 +310,7 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
 
                     let path = dir.into_path();
                     for import in v {
-                        tx.send((import, path.clone())).unwrap()
+                        tx.send((import, path.clone())).unwrap();
                     }
                 }
             }
@@ -326,10 +328,10 @@ pub fn run(cli: Cli) -> Result<Option<Vec<String>>> {
                     // A broken pipe means graceful termination, so fall through.
                     // Otherwise, something bad happened while writing to stdout, so bubble
                     // it up.
-                    if err.kind() != io::ErrorKind::BrokenPipe {
-                        Err(err.into())
-                    } else {
+                    if err.kind() == io::ErrorKind::BrokenPipe {
                         Ok(None)
+                    } else {
+                        Err(err.into())
                     }
                 }
             }

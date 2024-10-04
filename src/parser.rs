@@ -44,7 +44,7 @@ fn from_package_import(input: &str) -> IResult<&str, ImportStatement> {
 fn simple_import(input: &str) -> IResult<&str, ImportStatement> {
     let (input, (_, _, package)) = tuple((tag("import"), space1, identifier))(input)?;
     let statement = ImportStatement {
-        module: "".to_owned(),
+        module: String::new(),
         package: package.to_owned(),
     };
     Ok((input, statement))
@@ -65,8 +65,8 @@ fn parse_block(input: &str) -> IResult<&str, Option<ImportStatement>> {
     alt((
         map(from_package_import, Some),
         map(simple_import, Some),
-        map(inline_comment, |_| None),
-        map(multiline_comment, |_| None),
+        map(inline_comment, |()| None),
+        map(multiline_comment, |()| None),
         // Consume everything else
         map(anychar, |_| None),
     ))(input)
@@ -78,6 +78,7 @@ fn parse_file(input: &str) -> IResult<&str, Vec<ImportStatement>> {
 }
 
 pub fn parse_python_file(input: &str) -> Result<Vec<ImportStatement>> {
+    #[allow(clippy::redundant_closure_for_method_calls)]
     let (_, v) = parse_file(input).map_err(|e| e.to_owned())?;
     Ok(v)
 }

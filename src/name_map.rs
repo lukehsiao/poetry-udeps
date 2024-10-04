@@ -64,9 +64,7 @@ mod tests {
         for name in names {
             assert!(
                 name > previous_name,
-                r#""{}" should be sorted before "{}" in `KNOWN_NAMES`"#,
-                name,
-                previous_name
+                r#""{name}" should be sorted before "{previous_name}" in `KNOWN_NAMES`"#,
             );
 
             previous_name = name;
