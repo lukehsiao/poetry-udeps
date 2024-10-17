@@ -35,6 +35,7 @@ pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "hydra-colorlog" => "colorlog",
     "hydra-core" => "hydra",
     "jupyter" => "IPython",
+    "levenshtein" => "Levenshtein",
     "opensearch-py" => "opensearchpy",
     "pdfminer.six" => "pdfminer",
     "protobuf" => "google.protobuf",
