@@ -14,7 +14,7 @@
   <a href="https://crates.io/crates/poetry-udeps">
     <img src="https://img.shields.io/crates/v/poetry-udeps" alt="Version">
   </a>
-  <a href="https://github.com/lukehsiao/poetry-udeps/blob/main/LICENSE">
+  <a href="https://github.com/lukehsiao/poetry-udeps/blob/main/LICENSE.md">
     <img src="https://img.shields.io/crates/l/poetry-udeps" alt="License">
   </a>
 </div>
