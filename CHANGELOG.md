@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.4](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.3..v0.2.4) - 2024-10-17
+
+This release adds a couple more names to the name map to reduce false positives.
+
+### Documentation
+
+- **(README)** update benchmarks for deptry 0.14.0 - ([ee2eb53](https://github.com/lukehsiao/poetry-udeps/commit/ee2eb533a55e324713729e6a66ce1d139b7da53a)) - Luke Hsiao
+- **(README)** add `un-pack` as related work - ([0805323](https://github.com/lukehsiao/poetry-udeps/commit/0805323735fa47c140bc26cce68f7d868dfb8120)) - Luke Hsiao
+
+### Refactor
+
+- enable and fix pedantic clippy lints - ([a07d11d](https://github.com/lukehsiao/poetry-udeps/commit/a07d11d2a73c6d5ca0932e4f483a7d43a4ad2e46)) - Luke Hsiao
+- use `tracing_log` to simplify main - ([dde6945](https://github.com/lukehsiao/poetry-udeps/commit/dde6945a861d8c1efc1a00220ff18bee06f7d8f7)) - Luke Hsiao
+
+---
 ## [0.2.3](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.2..v0.2.3) - 2024-03-06
 
 ### Bug Fixes
