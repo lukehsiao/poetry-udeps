@@ -171,4 +171,4 @@ This is a list of cases where unused dependencies were found using `poetry-udeps
 This tool is distributed under the terms of the Blue Oak license.
 Any contributions are licensed under the same license, and acknowledge via the [Developer Certificate of Origin](https://developercertificate.org/).
 
-See [LICENSE](LICENSE) for details.
+See [LICENSE](LICENSE.md) for details.
