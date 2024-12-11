@@ -49,6 +49,7 @@ pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "scikit-learn" => "sklearn",
     "snowflake-connector-python" => "snowflake",
     "unicodedata2" => "unicodedata",
+    "vl-convert-python" => "vl_convert",
 };
 
 #[cfg(test)]
