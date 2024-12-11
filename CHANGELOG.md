@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.6](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.5..v0.2.6) - 2024-12-11
+
+### Features
+
+- add support for `.poetryudepsignore` - ([97be5d3](https://github.com/lukehsiao/poetry-udeps/commit/97be5d34a6817711082d27d43a21c9115960eef9)) - Luke Hsiao
+
+---
 ## [0.2.5](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.4..v0.2.5) - 2024-12-11
 
 ### Bug Fixes
