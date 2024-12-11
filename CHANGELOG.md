@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.5](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.4..v0.2.5) - 2024-12-11
+
+### Bug Fixes
+
+- **(name-map)** add `vl-convert-python`'s alias - ([c03d52d](https://github.com/lukehsiao/poetry-udeps/commit/c03d52d4c4d7147d8203c4c3f7023dbef5552d0a)) - Luke Hsiao
+
+### Documentation
+
+- **(LICENSE)** use `md` extension for nicer rendering - ([c7f71c5](https://github.com/lukehsiao/poetry-udeps/commit/c7f71c561b04c9ad1edcf51a715324306e151c53)) - Luke Hsiao
+- **(README)** update link to license file - ([fbb08ce](https://github.com/lukehsiao/poetry-udeps/commit/fbb08ce2f4c8d829e27a779f20fc24438c95d6d2)) - Nicholas Chiang
+
+---
 ## [0.2.4](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.3..v0.2.4) - 2024-10-17
 
 This release adds a couple more names to the name map to reduce false positives.
