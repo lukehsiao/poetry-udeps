@@ -60,15 +60,21 @@ Find unused dependencies in pyproject.toml
 Usage: poetry-udeps [OPTIONS]
 
 Options:
-  -v, --verbose...  More output per occurrence
-  -q, --quiet...    Less output per occurrence
-  -e, --virtualenv  Whether to look for dependency usage in the poetry
-                    virtualenv
-  -d, --dev         Whether to look for unused dependencies from
-                    dev-dependencies
+  -v, --verbose...  Increase logging verbosity
+  -q, --quiet...    Decrease logging verbosity
+  -e, --virtualenv  Whether to look for dependency usage in the poetry virtualenv
+  -d, --dev         Whether to look for unused dependencies from dev-dependencies
+      --no-ignore   Whether to ignore the files in .poetryudepsignore
   -h, --help        Print help (see more with '--help')
   -V, --version     Print version
 ```
+
+### Using `.poetryudepsignore`
+
+`poetry-udeps` supports ignoring packages from a `.poetryudepsignore` file.
+This file is a simple text file with 1 package name per line.
+Empty lines, and lines starting with `#` are ignored.
+This is useful when you have packages you know are false positives (e.g., `asyncpg`) and do not want them to continually show up in the output.
 
 ## How does this work?
 

@@ -1,7 +1,7 @@
 use std::{
     collections::BTreeMap,
     fs::{self, File},
-    io::{self, Read},
+    io::{self, BufRead, BufReader, Read},
     path::{Path, PathBuf},
     thread,
 };
@@ -18,6 +18,8 @@ mod name_map;
 mod parser;
 use crate::name_map::KNOWN_NAMES;
 use crate::parser::{parse_python_file, ImportStatement};
+
+const IGNORE_FILE: &str = ".poetryudepsignore";
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -127,6 +129,29 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
         }
     });
     Ok(Some(dependencies))
+}
+
+// Read lines from ignorefile. Ignore empty lines and comments.
+fn read_lines(file: &File) -> io::Result<Vec<String>> {
+    let lines: Vec<_> = BufReader::new(file).lines().collect::<Result<_, _>>()?;
+    Ok(lines
+        .into_iter()
+        .filter(|line| !(line.is_empty() || line.trim_start().starts_with('#')))
+        .collect())
+}
+
+// Filter out dependencies from udeps if they are in the ignorefile.
+fn apply_ignorefile(udeps: Vec<String>) -> io::Result<Vec<String>> {
+    let ignore_packages = match File::open(IGNORE_FILE) {
+        Ok(poetryudepsignore) => read_lines(&poetryudepsignore)?,
+        Err(_) => return Ok(udeps),
+    };
+
+    debug!(ignored = ?ignore_packages);
+    Ok(udeps
+        .into_iter()
+        .filter(|dep| !ignore_packages.contains(dep))
+        .collect())
 }
 
 #[allow(clippy::too_many_lines)]
@@ -247,7 +272,8 @@ pub fn run(cli: &Cli) -> Result<Option<Vec<String>>> {
         if udeps.is_empty() {
             Ok(None)
         } else {
-            Ok(Some(udeps))
+            // Filter out those from ignorefile
+            Ok(Some(apply_ignorefile(udeps)?))
         }
     });
 
