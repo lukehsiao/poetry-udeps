@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.7](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.6..v0.2.7) - 2024-12-11
+
+### Bug Fixes
+
+- clarify help text for flag behavior - ([3e6ffce](https://github.com/lukehsiao/poetry-udeps/commit/3e6ffcee257dd7db6660a3d1d208ca83caaa9784)) - Luke Hsiao
+
+---
 ## [0.2.6](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.5..v0.2.6) - 2024-12-11
 
 ### Features
