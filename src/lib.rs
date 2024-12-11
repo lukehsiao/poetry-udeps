@@ -27,19 +27,19 @@ pub struct Cli {
     #[clap(flatten)]
     pub verbose: Verbosity,
     #[arg(short = 'e', long)]
-    /// Whether to look for dependency usage in the poetry virtualenv.
+    /// Look for dependency usage in the poetry virtualenv.
     ///
     /// Assumes you have already installed all dependencies using poetry. It
     /// will check the directory specified by `poetry env info -p`.
     pub virtualenv: bool,
     #[arg(short, long)]
-    /// Whether to look for unused dependencies from dev-dependencies.
+    /// Look for unused dependencies in dev-dependencies.
     ///
     /// Many projects include dev deps like CLI tools that are intentionally
-    /// unused.
+    /// not directly used in the codebase.
     pub dev: bool,
     #[arg(long = "no-ignore")]
-    /// Whether to ignore the files in .poetryudepsignore
+    /// Do not ignore the packages in .poetryudepsignore
     pub no_ignore: bool,
 }
 

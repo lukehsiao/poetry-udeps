@@ -62,9 +62,9 @@ Usage: poetry-udeps [OPTIONS]
 Options:
   -v, --verbose...  Increase logging verbosity
   -q, --quiet...    Decrease logging verbosity
-  -e, --virtualenv  Whether to look for dependency usage in the poetry virtualenv
-  -d, --dev         Whether to look for unused dependencies from dev-dependencies
-      --no-ignore   Whether to ignore the files in .poetryudepsignore
+  -e, --virtualenv  Look for dependency usage in the poetry virtualenv
+  -d, --dev         Look for unused dependencies in dev-dependencies
+      --no-ignore   Do not ignore the packages in .poetryudepsignore
   -h, --help        Print help (see more with '--help')
   -V, --version     Print version
 ```
