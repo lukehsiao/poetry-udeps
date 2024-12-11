@@ -36,6 +36,9 @@ pub struct Cli {
     /// Many projects include dev deps like CLI tools that are intentionally
     /// unused.
     pub dev: bool,
+    #[arg(long = "no-ignore")]
+    /// Whether to ignore the files in .poetryudepsignore
+    pub no_ignore: bool,
 }
 
 fn get_venv_path() -> Result<String> {
@@ -60,7 +63,6 @@ enum DepType {
 /// is not as straightforward to the user which line to eliminate from their
 /// pyproject.toml.
 fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<String, Vec<String>>>> {
-    // let sh = Shell::new()?;
     let toml = fs::read_to_string(file)?;
 
     // TODO: map package name to actual module name.
@@ -113,15 +115,6 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
         let package = String::from(s);
         dependencies.insert(package.clone(), vec![]);
         let mut alias = KNOWN_NAMES.get(&package).map(|a| String::from(*a));
-
-        // Try to grab from top_level.txt
-        // Commented out because this is way to freakin slow.
-        // {
-        //     let bash = format!(r#"cat $(poetry run python -c "import pkg_resources; print(pkg_resources.get_distribution('{}').egg_info)" 2>/dev/null )/top_level.txt 2> /dev/null"#, package);
-        //     cmd!(sh, "bash -c {bash}").quiet().read().unwrap_or(String::new()).split_whitespace().for_each(|a| {
-        //         dependencies.insert(String::from(a), Some(package.clone()));
-        //     })
-        // }
 
         // Or basic replacement
         if alias.is_none() && package.contains('-') {
