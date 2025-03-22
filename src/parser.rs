@@ -1,12 +1,12 @@
 use anyhow::Result;
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::{is_not, tag, take_until},
     character::complete::{alpha1, alphanumeric1, anychar, char, space1},
     combinator::{all_consuming, map, recognize, value},
     multi::{many0, many0_count},
     sequence::{pair, tuple},
-    IResult,
 };
 
 #[derive(Debug, PartialEq)]

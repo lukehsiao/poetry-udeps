@@ -6,18 +6,18 @@ use std::{
     thread,
 };
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use clap::Parser;
 use clap_verbosity_flag::Verbosity;
-use ignore::{types::TypesBuilder, WalkBuilder};
+use ignore::{WalkBuilder, types::TypesBuilder};
 use toml::Value;
 use tracing::{debug, error, info};
-use xshell::{cmd, Shell};
+use xshell::{Shell, cmd};
 
 mod name_map;
 mod parser;
 use crate::name_map::KNOWN_NAMES;
-use crate::parser::{parse_python_file, ImportStatement};
+use crate::parser::{ImportStatement, parse_python_file};
 
 const IGNORE_FILE: &str = ".poetryudepsignore";
 
