@@ -19,7 +19,7 @@ clap-verbosity-flag = "3.0.2"
 flume = "0.11.1"
 ignore = "0.4.23"
 log = "0.4.26"
-nom = "7.1.3"
+nom = "8.0.0"
 phf = { version = "0.11.3", features = ["macros"] }
 toml = "0.8.20"
 tracing = "0.1.41"

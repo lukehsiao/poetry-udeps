@@ -1,12 +1,12 @@
 use anyhow::Result;
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::{is_not, tag, take_until},
     character::complete::{alpha1, alphanumeric1, anychar, char, space1},
     combinator::{all_consuming, map, recognize, value},
     multi::{many0, many0_count},
-    sequence::{pair, tuple},
+    sequence::pair,
 };
 
 #[derive(Debug, PartialEq)]
@@ -21,11 +21,12 @@ fn identifier(input: &str) -> IResult<&str, &str> {
     recognize(pair(
         alt((alpha1, tag("_"))),
         many0_count(alt((alphanumeric1, tag("_"), tag(".")))),
-    ))(input)
+    ))
+    .parse(input)
 }
 
 fn from_package_import(input: &str) -> IResult<&str, ImportStatement> {
-    let (input, (_, _, package, _, _, _, module)) = tuple((
+    let (input, (_, _, package, _, _, _, module)) = (
         tag("from"),
         space1,
         identifier,
@@ -33,7 +34,8 @@ fn from_package_import(input: &str) -> IResult<&str, ImportStatement> {
         tag("import"),
         space1,
         identifier,
-    ))(input)?;
+    )
+        .parse(input)?;
     let statement = ImportStatement {
         module: module.to_owned(),
         package: package.to_owned(),
@@ -42,7 +44,7 @@ fn from_package_import(input: &str) -> IResult<&str, ImportStatement> {
 }
 
 fn simple_import(input: &str) -> IResult<&str, ImportStatement> {
-    let (input, (_, _, package)) = tuple((tag("import"), space1, identifier))(input)?;
+    let (input, (_, _, package)) = (tag("import"), space1, identifier).parse(input)?;
     let statement = ImportStatement {
         module: String::new(),
         package: package.to_owned(),
@@ -51,14 +53,11 @@ fn simple_import(input: &str) -> IResult<&str, ImportStatement> {
 }
 
 fn inline_comment(input: &str) -> IResult<&str, ()> {
-    value((), pair(char('#'), is_not("\n\r")))(input)
+    value((), pair(char('#'), is_not("\n\r"))).parse(input)
 }
 
 fn multiline_comment(input: &str) -> IResult<&str, ()> {
-    value(
-        (),
-        tuple((tag("\"\"\""), take_until("\"\"\""), tag("\"\"\""))),
-    )(input)
+    value((), (tag("\"\"\""), take_until("\"\"\""), tag("\"\"\""))).parse(input)
 }
 
 fn parse_block(input: &str) -> IResult<&str, Option<ImportStatement>> {
@@ -69,11 +68,12 @@ fn parse_block(input: &str) -> IResult<&str, Option<ImportStatement>> {
         map(multiline_comment, |()| None),
         // Consume everything else
         map(anychar, |_| None),
-    ))(input)
+    ))
+    .parse(input)
 }
 
 fn parse_file(input: &str) -> IResult<&str, Vec<ImportStatement>> {
-    let (i, v) = all_consuming(many0(parse_block))(input)?;
+    let (i, v) = all_consuming(many0(parse_block)).parse(input)?;
     Ok((i, v.into_iter().flatten().collect()))
 }
 
