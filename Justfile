@@ -3,9 +3,6 @@
 _default:
 	@just --list
 
-fmt:
-	cargo fmt
-
 # Runs clippy on the sources
 check:
 	cargo clippy --all-targets --all-features --locked -- -W clippy::pedantic -D warnings
