@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.8](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.7..v0.2.8) - 2025-04-21
+
+### Features
+
+- support poetry 2.x using PEP 621 - ([8f91c86](https://github.com/lukehsiao/poetry-udeps/commit/8f91c86942dcafc96d58ab534f9d11350b022fd1)) - Luke Hsiao
+
+---
 ## [0.2.7](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.6..v0.2.7) - 2024-12-11
 
 ### Bug Fixes
