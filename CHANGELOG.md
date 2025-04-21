@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.9](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.8..v0.2.9) - 2025-04-21
+
+### Bug Fixes
+
+- add json-stream and Markdown to name_map - ([c8ee3ea](https://github.com/lukehsiao/poetry-udeps/commit/c8ee3ea9a9b4ec03b0a5d6a8a00844f76cf8d345)) - Luke Hsiao
+
+---
 ## [0.2.8](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.7..v0.2.8) - 2025-04-21
 
 ### Features
