@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.2.10](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.9..v0.2.10) - 2025-04-21
+
+### Bug Fixes
+
+- return 0 exit code if ignorefile filters all entries - ([496c2cb](https://github.com/lukehsiao/poetry-udeps/commit/496c2cba44b62a583f82684e081ef85bba87da38)) - Luke Hsiao
+
+---
 ## [0.2.9](https://github.com/lukehsiao/poetry-udeps/compare/v0.2.8..v0.2.9) - 2025-04-21
 
 ### Bug Fixes
