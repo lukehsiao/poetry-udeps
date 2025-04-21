@@ -70,7 +70,7 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
     // TODO: map package name to actual module name.
     // Ref: https://stackoverflow.com/a/54853084
     let value = toml.parse::<Value>()?;
-    let dep_table = match deps {
+    let dep_table: Vec<String> = match deps {
         DepType::Main => {
             match value
                 .get("tool")
@@ -78,8 +78,30 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
                 .and_then(|poetry| poetry.get("dependencies"))
                 .and_then(|deps| deps.as_table())
             {
-                Some(deps) => deps,
-                None => bail!("failed to parse dependencies from pyproject.toml"),
+                Some(deps) => deps.keys().map(|s| s.to_owned()).collect(),
+                // Check poetry >=2.0
+                None => {
+                    if let Some(deps) = value
+                        .get("project")
+                        .and_then(|dev| dev.get("dependencies"))
+                        .and_then(|dependencies| dependencies.as_array())
+                        .and_then(|dep_array: &Vec<Value>| {
+                            let keys: Vec<String> = dep_array
+                                .iter()
+                                .filter_map(|val| {
+                                    val.as_str().and_then(|s| {
+                                        pep_508::parse(s).ok().map(|req| req.name.to_string())
+                                    })
+                                })
+                                .collect();
+                            Some(keys)
+                        })
+                    {
+                        deps
+                    } else {
+                        bail!("failed to parse dependencies from pyproject.toml")
+                    }
+                }
             }
         }
         DepType::Dev => {
@@ -90,7 +112,7 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
                 .and_then(|poetry| poetry.get("dev-dependencies"))
                 .and_then(|dev| dev.as_table())
             {
-                Some(dev) => dev,
+                Some(dev) => dev.keys().map(|s| s.to_owned()).collect(),
                 // Check poetry >=1.2.0's dependency groups
                 None => {
                     if let Some(deps) = value
@@ -101,7 +123,7 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
                         .and_then(|dev| dev.get("dependencies"))
                         .and_then(|dependencies| dependencies.as_table())
                     {
-                        deps
+                        deps.keys().map(|s| s.to_owned()).collect()
                     } else {
                         info!("failed to parse dev dependencies from pyproject.toml");
                         return Ok(None);
@@ -113,7 +135,7 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
     let mut dependencies: BTreeMap<String, Vec<String>> = BTreeMap::new();
 
     // Generate a list of possible aliases for the package
-    dep_table.keys().filter(|s| *s != "python").for_each(|s| {
+    dep_table.iter().filter(|s| *s != "python").for_each(|s| {
         let package = String::from(s);
         dependencies.insert(package.clone(), vec![]);
         let mut alias = KNOWN_NAMES.get(&package).map(|a| String::from(*a));
