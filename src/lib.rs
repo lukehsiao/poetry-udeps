@@ -78,23 +78,22 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
                 .and_then(|poetry| poetry.get("dependencies"))
                 .and_then(|deps| deps.as_table())
             {
-                Some(deps) => deps.keys().map(|s| s.to_owned()).collect(),
+                Some(deps) => deps.keys().map(std::borrow::ToOwned::to_owned).collect(),
                 // Check poetry >=2.0
                 None => {
                     if let Some(deps) = value
                         .get("project")
                         .and_then(|dev| dev.get("dependencies"))
                         .and_then(|dependencies| dependencies.as_array())
-                        .and_then(|dep_array: &Vec<Value>| {
-                            let keys: Vec<String> = dep_array
+                        .map(|dep_array: &Vec<Value>| {
+                            dep_array
                                 .iter()
                                 .filter_map(|val| {
                                     val.as_str().and_then(|s| {
                                         pep_508::parse(s).ok().map(|req| req.name.to_string())
                                     })
                                 })
-                                .collect();
-                            Some(keys)
+                                .collect()
                         })
                     {
                         deps
@@ -112,7 +111,7 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
                 .and_then(|poetry| poetry.get("dev-dependencies"))
                 .and_then(|dev| dev.as_table())
             {
-                Some(dev) => dev.keys().map(|s| s.to_owned()).collect(),
+                Some(dev) => dev.keys().map(std::borrow::ToOwned::to_owned).collect(),
                 // Check poetry >=1.2.0's dependency groups
                 None => {
                     if let Some(deps) = value
@@ -123,7 +122,7 @@ fn get_dependencies(file: &Path, deps: &DepType) -> Result<Option<BTreeMap<Strin
                         .and_then(|dev| dev.get("dependencies"))
                         .and_then(|dependencies| dependencies.as_table())
                     {
-                        deps.keys().map(|s| s.to_owned()).collect()
+                        deps.keys().map(std::borrow::ToOwned::to_owned).collect()
                     } else {
                         info!("failed to parse dev dependencies from pyproject.toml");
                         return Ok(None);
