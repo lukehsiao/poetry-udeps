@@ -18,6 +18,7 @@ use phf::phf_ordered_map;
 #[rustfmt::skip]
 pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "Flask" => "flask",
+    "Markdown" => "markdown",
     "PyYAML" => "yaml",
     "SQLAlchemy" => "sqlalchemy",
     "Wand" => "wand",
@@ -37,7 +38,6 @@ pub static KNOWN_NAMES: phf::OrderedMap<&str, &str> = phf_ordered_map! {
     "json-stream" => "json_stream",
     "jupyter" => "IPython",
     "levenshtein" => "Levenshtein",
-    "Markdown" => "markdown",
     "opensearch-py" => "opensearchpy",
     "pdfminer.six" => "pdfminer",
     "protobuf" => "google.protobuf",
