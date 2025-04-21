@@ -294,7 +294,12 @@ pub fn run(cli: &Cli) -> Result<Option<Vec<String>>> {
             Ok(None)
         } else {
             // Filter out those from ignorefile
-            Ok(Some(apply_ignorefile(udeps)?))
+            let filtered = apply_ignorefile(udeps)?;
+            if filtered.is_empty() {
+                Ok(None)
+            } else {
+                Ok(Some(filtered))
+            }
         }
     });
 
