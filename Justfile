@@ -138,9 +138,17 @@ version *args:
 publish:
 	#!/usr/bin/env bash
 	set -euo pipefail
-	output=$(pnpm changeset publish 2>&1)
-	echo "$output"
-	if echo "$output" | grep -q "New tag:"; then
+
+	# changesets reports the tags it creates as NDJSON events in this file, which
+	# is how we tell a real release apart from a no-op run. changesets/action sets
+	# the variable itself and reads the same file afterwards to build the GitHub
+	# release, so honor its path when it is already set.
+	: "${CHANGESETS_OUTPUT:=$(mktemp -t changesets-output-XXXXXXXX.ndjson)}"
+	export CHANGESETS_OUTPUT
+
+	pnpm changeset publish
+
+	if [ -s "$CHANGESETS_OUTPUT" ] && jaq -e -s 'any(.[]; .type == "git-tag")' "$CHANGESETS_OUTPUT" > /dev/null; then
 	    cargo publish
 	else
 	    echo "No new version published by changesets, skipping cargo publish."
