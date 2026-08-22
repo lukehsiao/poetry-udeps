@@ -287,12 +287,12 @@ mod properties {
     }
 
     #[hegel::composite]
-    fn package_name(tc: hegel::TestCase) -> String {
+    fn package_name(tc: &hegel::TestCase) -> String {
         tc.draw(generators::from_regex("[a-zA-Z0-9][a-zA-Z0-9._-]{0,12}").fullmatch(true))
     }
 
     #[hegel::composite]
-    fn arbitrary_import(tc: hegel::TestCase) -> Import {
+    fn arbitrary_import(tc: &hegel::TestCase) -> Import {
         let module = tc.draw(hegel::one_of!(
             generators::from_regex("dbt\\.adapters(\\.[a-z]{1,6}){0,2}").fullmatch(true),
             module_path(),

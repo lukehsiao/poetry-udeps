@@ -307,7 +307,7 @@ mod properties {
     }
 
     #[hegel::composite]
-    fn spec(tc: hegel::TestCase) -> Spec {
+    fn spec(tc: &hegel::TestCase) -> Spec {
         let maybe_alias = |tc: &hegel::TestCase| {
             if tc.draw(generators::booleans()) {
                 Some(tc.draw(identifier()))
@@ -318,12 +318,12 @@ mod properties {
         if tc.draw(generators::booleans()) {
             Spec::Plain {
                 path: tc.draw(module_path()),
-                alias: maybe_alias(&tc),
+                alias: maybe_alias(tc),
             }
         } else {
             let count = tc.draw(generators::integers::<usize>().min_value(1).max_value(3));
             let names = (0..count)
-                .map(|_| (tc.draw(identifier()), maybe_alias(&tc)))
+                .map(|_| (tc.draw(identifier()), maybe_alias(tc)))
                 .collect();
             Spec::From {
                 path: tc.draw(module_path()),
