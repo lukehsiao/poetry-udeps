@@ -36,6 +36,7 @@ Additional name mappings can be added to [`src/name_map.rs`](src/name_map.rs) to
 -   [Install](#install)
     -   [From crates.io](#from-cratesio)
     -   [Arch](#arch)
+    -   [mise](#mise)
     -   [In GitHub Actions](#in-github-actions)
 -   [Usage](#usage)
 -   [How does this work?](#how-does-this-work)
@@ -65,6 +66,14 @@ On Arch Linux, install from the [AUR](https://aur.archlinux.org/) using your pre
 ```
 paru -S pyproject-udeps       # builds from source
 paru -S pyproject-udeps-bin   # prebuilt binary
+```
+
+### mise
+
+[mise](https://mise.jdx.dev/) can install a prebuilt binary directly from the GitHub release, verifying its checksum and SLSA provenance:
+
+```
+mise use -g github:lukehsiao/pyproject-udeps
 ```
 
 ### In GitHub Actions
