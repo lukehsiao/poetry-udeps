@@ -97,15 +97,19 @@ jobs:
         if: matrix.ext == 'tar.gz'
         shell: bash
         run: |
+          mkdir stage
+          cp target/${{ matrix.target }}/release/pyproject-udeps LICENSE.md README.md stage/
           tar czf pyproject-udeps-${{ matrix.target }}.tar.gz \
-            -C target/${{ matrix.target }}/release pyproject-udeps
+            -C stage pyproject-udeps LICENSE.md README.md
 
       - name: Create archive (zip, Windows)
         if: matrix.ext == 'zip' && runner.os == 'Windows'
         shell: bash
         run: |
-          7z a pyproject-udeps-${{ matrix.target }}.zip \
-            ./target/${{ matrix.target }}/release/pyproject-udeps.exe
+          mkdir stage
+          cp target/${{ matrix.target }}/release/pyproject-udeps.exe LICENSE.md README.md stage/
+          cd stage
+          7z a ../pyproject-udeps-${{ matrix.target }}.zip pyproject-udeps.exe LICENSE.md README.md
 
       - name: Generate checksums
         shell: bash
