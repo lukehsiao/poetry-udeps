@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.3.8
+
+### Patch Changes
+
+- [`b257f76`](https://github.com/lukehsiao/pyproject-udeps/commit/b257f766afb6889151f8c790dd3d23890c34c9e0) - **fix**: stop pinning the AUR `pyproject-udeps-bin` package to GitHub's auto-generated `archive/` tarball.
+  
+  Release archives now carry `LICENSE.md` and `README.md` alongside the binary, so the `-bin` PKGBUILD no longer needs the `archive/` tarball, whose bytes are not stable over time and could have started failing checksum validation without any release changing.
+
+- [`2773e4a`](https://github.com/lukehsiao/pyproject-udeps/commit/2773e4a38a55575e935c915dd24ad4591e85f359) - **fix**: download AUR `pyproject-udeps-bin` release tarballs to version-suffixed filenames.
+  
+  The release assets are named without a version, so makepkg's source cache collided across releases: a tarball cached from an older install shadowed the new download and failed checksum validation, breaking `paru -S pyproject-udeps-bin` on upgrade.
+
+<pre>
+$ git-stats v0.3.7..v0.3.8
+Author           Commits  Changed Files  Insertions  Deletions  Net Δ
+Luke Hsiao             5             21        +392       -839   -447
+dependabot[bot]        3             10         +16        -16      0
+Total                  8             31        +408       -855   -447
+</pre>
+
 ## 0.3.7
 
 ### Patch Changes
