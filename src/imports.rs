@@ -276,7 +276,7 @@ mod properties {
     use hegel::generators;
 
     /// One import statement to render, plus the extraction we expect from it.
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, hegel::PrettyPrintable)]
     enum Spec {
         Plain {
             path: String,
