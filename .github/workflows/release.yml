@@ -50,7 +50,7 @@ jobs:
   binaries:
     needs: release
     if: needs.release.outputs.published == 'true'
-    uses: ./.github/workflows/binaries.yml
+    uses: $/.github/workflows/binaries.yml
     with:
       tag: v${{ fromJSON(needs.release.outputs.published-packages)[0].version }}
     permissions:
